@@ -1,4 +1,4 @@
-package com.project.iosephknecht.singleselectionrecyclerview.view.adapter
+package com.project.iosephknecht.singleselectionrecyclerview.presentation.view.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.project.iosephknecht.singleselectionrecyclerview.R
-import com.project.iosephknecht.singleselectionrecyclerview.viewModel.SelectableViewState
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.SelectableViewState
 
 class SelectableAdapter(
     private val selectableBinder: SelectableBinder

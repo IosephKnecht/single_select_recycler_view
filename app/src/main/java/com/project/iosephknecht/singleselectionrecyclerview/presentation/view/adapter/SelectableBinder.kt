@@ -1,10 +1,10 @@
-package com.project.iosephknecht.singleselectionrecyclerview.view.adapter
+package com.project.iosephknecht.singleselectionrecyclerview.presentation.view.adapter
 
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.project.iosephknecht.singleselectionrecyclerview.R
-import com.project.iosephknecht.singleselectionrecyclerview.viewModel.SelectableViewState
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.SelectableViewState
 import java.util.*
 
 class SelectableBinder(
@@ -28,7 +28,7 @@ class SelectableBinder(
         itemView.setBackgroundColor(
             ContextCompat.getColor(
                 context,
-                if (viewState.isSelected) R.color.colorAccent else android.R.color.white
+                if (viewState.isSelected) R.color.accent else android.R.color.white
             )
         )
     }
