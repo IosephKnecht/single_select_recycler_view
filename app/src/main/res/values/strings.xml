@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SingleSelectionRecyclerView</string>
+    <string name="remove_confirm_title">Are you sure you want to delete the entry?\n%s</string>
 </resources>

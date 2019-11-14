@@ -1,7 +1,8 @@
 package com.project.iosephknecht.singleselectionrecyclerview.presentation.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -10,11 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.MainViewModel
 import com.project.iosephknecht.singleselectionrecyclerview.R
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.contract.MainContract
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.adapter.SelectableBinder
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.adapter.SelectableAdapter
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.adapter.SelectableBinder
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.MainViewModel
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.SelectableViewState
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,12 +31,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-        adapter = SelectableAdapter(
-            SelectableBinder { uuid, adapterPosition ->
-                viewModel.select(uuid, adapterPosition)
-            }
-        )
 
+        adapter = SelectableAdapter(
+            selectableBinder = SelectableBinder { uuid, adapterPosition ->
+                viewModel.select(uuid, adapterPosition)
+            },
+            removeAction = viewModel::remove
+        )
 
         recyclerView = findViewById<RecyclerView>(R.id.recycler_view)?.apply {
             layoutManager = LinearLayoutManager(context)
@@ -69,6 +72,11 @@ class MainActivity : AppCompatActivity() {
             })
             diff.observe(this@MainActivity, Observer { diff ->
                 diff?.also { adapter!!.applyDiff(it) }
+            })
+            confirmRemoveDialog.observe(this@MainActivity, Observer { removeModel ->
+                removeModel?.also {
+                    showRemoveConfirmDialog(it)
+                }
             })
         }
     }
@@ -111,5 +119,22 @@ class MainActivity : AppCompatActivity() {
                 setOnClickListener { viewModel.add() }
             }
         }
+    }
+
+    private fun showRemoveConfirmDialog(viewState: SelectableViewState) {
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(getString(R.string.remove_confirm_title, viewState.label))
+            .setPositiveButton(android.R.string.yes) { dialog, _ ->
+                viewModel.confirmRemove()
+                dialog.dismiss()
+            }
+            .setNegativeButton(android.R.string.no) { dialog, _ ->
+                viewModel.declineRemove()
+                dialog.dismiss()
+            }
+            .setCancelable(false)
+            .create()
+
+        dialog.show()
     }
 }

@@ -23,15 +23,6 @@ class MainViewModel : ViewModel(),
 
     private val stateController = StateController(
         items = generatedList,
-        creator = {
-            SelectableViewState(
-                someModel = SomeModel(
-                    UUID.randomUUID(),
-                    label = "",
-                    value = ""
-                )
-            )
-        },
         viewController = this
     )
 
@@ -39,6 +30,11 @@ class MainViewModel : ViewModel(),
     override val items = MutableLiveData(generatedList)
     override val addState = MutableLiveData(false)
     override val diff = MutableLiveData<Array<Pair<Int, ItemAction>>>()
+    override val confirmRemoveDialog = MutableLiveData<SelectableViewState>()
+
+    override fun onCleared() {
+        stateController.release()
+    }
 
     override fun select(
         uuid: UUID,
@@ -48,15 +44,35 @@ class MainViewModel : ViewModel(),
     }
 
     override fun add() {
-        stateController.add()
+        items.value?.also {
+            val newIndex = it.size
+
+            stateController.add(
+                SelectableViewState(
+                    someModel = SomeModel(
+                        UUID.randomUUID(),
+                        label = "label_${newIndex}",
+                        value = "value_${newIndex}"
+                    )
+                )
+            )
+        }
     }
 
     override fun confirmAdd() {
-        stateController.confirmSave()
+        stateController.confirmAdd()
     }
 
-    override fun onCleared() {
-        stateController.release()
+    override fun remove(selectableViewState: SelectableViewState) {
+        stateController.remove(selectableViewState)
+    }
+
+    override fun confirmRemove() {
+        stateController.confirmRemove()
+    }
+
+    override fun declineRemove() {
+        confirmRemoveDialog.value = null
     }
 
     override fun onUpdate(list: List<SelectableViewState>, addNewElement: Boolean) {
@@ -73,6 +89,10 @@ class MainViewModel : ViewModel(),
             unselectAdapterPosition to ItemAction.CHANGE,
             selectAdapterPosition to ItemAction.CHANGE
         )
+    }
+
+    override fun onRemove(model: SelectableViewState) {
+        confirmRemoveDialog.value = model
     }
 
     private fun generateList(): List<SomeModel> {
