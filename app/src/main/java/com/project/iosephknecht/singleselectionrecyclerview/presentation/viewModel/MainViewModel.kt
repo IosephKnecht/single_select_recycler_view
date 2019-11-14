@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeModel
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.contract.MainContract
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.model.ItemAction
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.StateController
 import java.util.*
 import kotlin.collections.ArrayList
@@ -37,9 +38,13 @@ class MainViewModel : ViewModel(),
 
     override val items = MutableLiveData(generatedList)
     override val addState = MutableLiveData(false)
+    override val diff = MutableLiveData<Array<Pair<Int, ItemAction>>>()
 
-    override fun select(uuid: UUID) {
-        stateController.selectItem(uuid)
+    override fun select(
+        uuid: UUID,
+        adapterPosition: Int
+    ) {
+        stateController.selectItem(uuid, adapterPosition)
     }
 
     override fun add() {
@@ -57,6 +62,17 @@ class MainViewModel : ViewModel(),
     override fun onUpdate(list: List<SelectableViewState>, addNewElement: Boolean) {
         this.items.value = ArrayList(list)
         this.addState.value = addNewElement
+    }
+
+    override fun onSingleSelect(adapterPosition: Int) {
+        diff.value = arrayOf(adapterPosition to ItemAction.CHANGE)
+    }
+
+    override fun onSwapSelect(unselectAdapterPosition: Int, selectAdapterPosition: Int) {
+        diff.value = arrayOf(
+            unselectAdapterPosition to ItemAction.CHANGE,
+            selectAdapterPosition to ItemAction.CHANGE
+        )
     }
 
     private fun generateList(): List<SomeModel> {

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.MainViewModel
 import com.project.iosephknecht.singleselectionrecyclerview.R
@@ -29,11 +30,10 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         adapter = SelectableAdapter(
-            SelectableBinder { uuid ->
-                viewModel.select(
-                    uuid
-                )
-            })
+            SelectableBinder { uuid, adapterPosition ->
+                viewModel.select(uuid, adapterPosition)
+            }
+        )
 
 
         recyclerView = findViewById<RecyclerView>(R.id.recycler_view)?.apply {
@@ -46,6 +46,10 @@ class MainActivity : AppCompatActivity() {
                     DividerItemDecoration.VERTICAL
                 )
             )
+            itemAnimator?.apply {
+                this as SimpleItemAnimator
+                this.supportsChangeAnimations = false
+            }
         }
 
         floatingActionButton = findViewById<FloatingActionButton>(R.id.floating_action_button)
@@ -62,6 +66,9 @@ class MainActivity : AppCompatActivity() {
             })
             addState.observe(this@MainActivity, Observer { isAdded ->
                 isAdded?.also { handleIsAddedChange(it) }
+            })
+            diff.observe(this@MainActivity, Observer { diff ->
+                diff?.also { adapter!!.applyDiff(it) }
             })
         }
     }

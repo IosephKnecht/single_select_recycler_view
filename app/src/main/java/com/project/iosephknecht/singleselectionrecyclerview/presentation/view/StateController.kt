@@ -10,12 +10,12 @@ class StateController<T : SelectableItem>(
 ) {
 
     private var currentState: State = Unselected()
-    private var selectedItem: T? = null
+    private var selectableTuple: SelectableTuple<T>? = null
 
     private val mutableItems: MutableList<T> = ArrayList(items)
 
-    fun selectItem(uuid: UUID) {
-        currentState.select(uuid)
+    fun selectItem(uuid: UUID, adapterPosition: Int) {
+        currentState.select(uuid, adapterPosition)
     }
 
     fun add() {
@@ -31,24 +31,45 @@ class StateController<T : SelectableItem>(
     }
 
     interface ViewController<T : SelectableItem> {
+        fun onSingleSelect(adapterPosition: Int)
+        fun onSwapSelect(unselectAdapterPosition: Int, selectAdapterPosition: Int)
         fun onUpdate(list: List<T>, addNewElement: Boolean)
     }
 
     private interface State {
-        fun select(uuid: UUID) {}
+        fun select(uuid: UUID, adapterPosition: Int) {}
         fun add() {}
         fun confirmSave() {}
         fun release() {}
     }
 
-    private inner class Unselected : State {
-        override fun select(uuid: UUID) {
-            mutableItems.find { it.uuid == uuid }?.also { viewState ->
-                selectedItem = viewState.apply {
-                    isSelected = true
-                }
+    private fun T.markSelect(isSelected: Boolean): T {
+        return this.apply { this.isSelected = isSelected }
+    }
 
-                viewController.onUpdate(mutableItems, false)
+    private data class SelectableTuple<T : SelectableItem>(
+        val model: T,
+        val adapterPosition: Int
+    ) {
+        val uuid: UUID
+            get() = model.uuid
+
+        var isSelected: Boolean
+            get() = model.isSelected
+            set(value) {
+                model.isSelected = value
+            }
+    }
+
+    private inner class Unselected : State {
+        override fun select(uuid: UUID, adapterPosition: Int) {
+            mutableItems.find { it.uuid == uuid }?.also { viewState ->
+                selectableTuple = SelectableTuple(
+                    viewState.markSelect(true),
+                    adapterPosition
+                )
+
+                viewController.onSingleSelect(adapterPosition)
 
                 currentState = Selected()
             }
@@ -59,7 +80,11 @@ class StateController<T : SelectableItem>(
                 isSelected = true
             }
 
-            selectedItem = newItem
+            selectableTuple = SelectableTuple(
+                newItem,
+                mutableItems.size + 1
+            )
+
             mutableItems.add(newItem)
             viewController.onUpdate(mutableItems, true)
 
@@ -67,22 +92,29 @@ class StateController<T : SelectableItem>(
         }
 
         override fun release() {
-            selectedItem = null
+            selectableTuple = null
             currentState = Release()
         }
     }
 
     private inner class Selected : State {
-        override fun select(uuid: UUID) {
-            if (selectedItem!!.uuid == uuid) return
+        override fun select(uuid: UUID, adapterPosition: Int) {
+            if (selectableTuple!!.uuid == uuid) return
 
             mutableItems.find { it.uuid == uuid }?.also { viewState ->
-                selectedItem!!.isSelected = false
-                selectedItem = viewState.apply {
-                    isSelected = true
-                }
+                selectableTuple!!.isSelected = false
 
-                viewController.onUpdate(mutableItems, false)
+                val unselectPosition = selectableTuple!!.adapterPosition
+
+                selectableTuple = SelectableTuple(
+                    viewState.markSelect(true),
+                    adapterPosition
+                )
+
+                viewController.onSwapSelect(
+                    unselectAdapterPosition = unselectPosition,
+                    selectAdapterPosition = adapterPosition
+                )
             }
         }
 
@@ -91,8 +123,11 @@ class StateController<T : SelectableItem>(
                 isSelected = true
             }
 
-            selectedItem!!.isSelected = false
-            selectedItem = newItem
+            selectableTuple!!.isSelected = false
+            selectableTuple = SelectableTuple(
+                newItem,
+                mutableItems.size + 1
+            )
 
             mutableItems.add(newItem)
 
@@ -102,19 +137,20 @@ class StateController<T : SelectableItem>(
         }
 
         override fun release() {
-            selectedItem = null
+            selectableTuple = null
             currentState = Release()
         }
     }
 
     private inner class ProcessAdd : State {
-        override fun select(uuid: UUID) {
+        override fun select(uuid: UUID, adapterPosition: Int) {
             mutableItems.find { it.uuid == uuid }?.also { viewState ->
-                mutableItems.remove(selectedItem!!)
+                mutableItems.remove(selectableTuple!!.model)
 
-                selectedItem = viewState.apply {
-                    isSelected = true
-                }
+                selectableTuple = SelectableTuple(
+                    viewState.apply { isSelected = true },
+                    adapterPosition
+                )
 
                 viewController.onUpdate(mutableItems, false)
 
@@ -123,13 +159,13 @@ class StateController<T : SelectableItem>(
         }
 
         override fun confirmSave() {
-            selectedItem!!.isSelected = false
+            selectableTuple!!.isSelected = false
             viewController.onUpdate(mutableItems, false)
             currentState = Unselected()
         }
 
         override fun release() {
-            selectedItem = null
+            selectableTuple = null
             currentState = Release()
         }
     }

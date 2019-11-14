@@ -8,9 +8,10 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewMod
 import java.util.*
 
 class SelectableBinder(
-    private val selectableAction: (UUID) -> Unit
+    private val selectableAction: (uuid: UUID, adapterPosition: Int) -> Unit
 ) {
     fun bind(
+        position: Int,
         viewState: SelectableViewState,
         itemView: View,
         labelTextView: TextView?,
@@ -19,7 +20,7 @@ class SelectableBinder(
         val context = itemView.context
 
         val clickListener = View.OnClickListener {
-            selectableAction.invoke(viewState.uuid)
+            selectableAction.invoke(viewState.uuid, position)
         }.takeIf { !viewState.isSelected }
 
         itemView.setOnClickListener(clickListener)

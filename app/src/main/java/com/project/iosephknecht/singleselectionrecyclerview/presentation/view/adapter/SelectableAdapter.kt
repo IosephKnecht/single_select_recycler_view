@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.project.iosephknecht.singleselectionrecyclerview.R
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.model.ItemAction
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.SelectableViewState
 
 class SelectableAdapter(
@@ -29,6 +30,7 @@ class SelectableAdapter(
         val viewState = items[position]
 
         selectableBinder.bind(
+            position,
             viewState,
             holder.itemView,
             holder.labelTextView,
@@ -44,6 +46,14 @@ class SelectableAdapter(
     fun reload(items: List<SelectableViewState>) {
         this.items = items
         notifyDataSetChanged()
+    }
+
+    fun applyDiff(diff: Array<Pair<Int, ItemAction>>) {
+        diff.forEach { (position, action) ->
+            when (action) {
+                ItemAction.CHANGE -> notifyItemChanged(position, null)
+            }
+        }
     }
 
 
