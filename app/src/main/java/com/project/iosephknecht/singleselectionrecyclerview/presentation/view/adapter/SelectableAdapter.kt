@@ -7,8 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.project.iosephknecht.singleselectionrecyclerview.R
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.model.ItemAction
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.SelectableViewState
+import java.util.*
 
 class SelectableAdapter(
     private val selectableBinder: SelectableBinder,
@@ -32,7 +32,6 @@ class SelectableAdapter(
         val viewState = items[position]
 
         selectableBinder.bind(
-            position,
             viewState,
             holder.itemView,
             holder.labelTextView,
@@ -53,11 +52,17 @@ class SelectableAdapter(
         notifyDataSetChanged()
     }
 
-    fun applyDiff(diff: Array<Pair<Int, ItemAction>>) {
-        diff.forEach { (position, action) ->
-            when (action) {
-                ItemAction.CHANGE -> notifyItemChanged(position, null)
+    fun applyDiff(diff: Array<UUID>) {
+        val positions = mutableListOf<Int>()
+
+        items.forEachIndexed { index, viewState ->
+            if (diff.contains(viewState.uuid)) {
+                positions.add(index)
             }
+        }
+
+        positions.forEach {
+            notifyItemChanged(it)
         }
     }
 

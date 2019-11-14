@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
         adapter = SelectableAdapter(
-            selectableBinder = SelectableBinder { uuid, adapterPosition ->
-                viewModel.select(uuid, adapterPosition)
+            selectableBinder = SelectableBinder { uuid ->
+                viewModel.select(uuid)
             },
             removeAction = viewModel::remove
         )
