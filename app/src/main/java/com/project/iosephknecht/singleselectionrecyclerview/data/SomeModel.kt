@@ -4,6 +4,6 @@ import java.util.*
 
 data class SomeModel(
     val uuid: UUID,
-    val label: String,
+    val label: SomeCategory,
     val value: String
 )

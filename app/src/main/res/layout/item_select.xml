@@ -7,11 +7,10 @@
     android:minHeight="56dp"
     android:padding="8dp">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:textColor="@color/primary_text"
         android:textSize="16sp"
         app:layout_constrainedWidth="true"
@@ -19,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.4"
-        tools:text="label" />
+        tools:listitem="@layout/item_spinner_label_dropdown" />
 
     <EditText
         android:id="@+id/value"

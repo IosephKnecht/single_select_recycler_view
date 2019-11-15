@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">SingleSelectionRecyclerView</string>
     <string name="remove_confirm_title">Are you sure you want to delete the entry?\n%s</string>
+
+    <string name="category_1_title">Category 1</string>
+    <string name="category_2_title">Category 2</string>
+    <string name="category_3_title">Category 3</string>
+    <string name="category_4_title">Category 4</string>
+
 </resources>

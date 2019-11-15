@@ -3,11 +3,10 @@ package com.project.iosephknecht.singleselectionrecyclerview.presentation.view.a
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.project.iosephknecht.singleselectionrecyclerview.R
+import com.project.iosephknecht.singleselectionrecyclerview.data.SomeCategory
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.SelectableViewState
 import java.util.*
 
@@ -23,6 +22,9 @@ class SelectableAdapter(
 
         return SelectableViewHolder(
             itemView,
+            SelectableSpinnerOnClickItemListener { ordinal ->
+                changedLabel = SomeCategory.values()[ordinal]
+            },
             SelectableViewStateTextWatcher { value ->
                 changedValue = value
             }
@@ -38,14 +40,16 @@ class SelectableAdapter(
             selectableBinder.bind(
                 viewState = viewState,
                 itemView = itemView,
-                labelTextView = labelTextView,
+                labelSpinner = labelSpinner,
                 valueTextView = valueTextView,
                 saveButton = saveButton,
                 removeButton = removeButton
             )
 
 
-            labelTextView?.setText(viewState.label)
+            labelSpinner?.setSelection(
+                viewState.changedLabel?.ordinal ?: viewState.originalLabel.ordinal
+            )
 
             valueTextView?.apply {
                 holder.bind(viewState)
@@ -84,23 +88,42 @@ class SelectableAdapter(
 
     class SelectableViewHolder(
         itemView: View,
+        private val spinnerClickListener: SelectableSpinnerOnClickItemListener,
         private val valueTextWatcher: SelectableViewStateTextWatcher
     ) : RecyclerView.ViewHolder(itemView) {
-
-        val labelTextView: TextView? = itemView.findViewById(R.id.label)
+        val labelSpinner: Spinner? = itemView.findViewById(R.id.label)
         val valueTextView: EditText? = itemView.findViewById(R.id.value)
         val removeButton: ImageView? = itemView.findViewById(R.id.delete_button)
         val saveButton: ImageView? = itemView.findViewById(R.id.save_button)
 
+        private val arrayAdapter: ArrayAdapter<String>
+
         init {
+            val context = itemView.context
+
+            arrayAdapter = ArrayAdapter(
+                context,
+                R.layout.item_spinner_label,
+                SomeCategory.values().map {
+                    it.getTitle(context.resources)!!
+                }
+            )
+
+            arrayAdapter.setDropDownViewResource(R.layout.item_spinner_label_dropdown)
+
+            labelSpinner?.adapter = arrayAdapter
+
+            labelSpinner?.setOnItemSelectedListener(spinnerClickListener)
             valueTextView?.addTextChangedListener(valueTextWatcher)
         }
 
         fun bind(viewState: SelectableViewState) {
+            spinnerClickListener.viewState = viewState
             valueTextWatcher.viewState = viewState
         }
 
         fun unbind() {
+            spinnerClickListener.viewState = null
             valueTextWatcher.viewState = null
         }
     }

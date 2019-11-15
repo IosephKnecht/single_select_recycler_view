@@ -2,6 +2,7 @@ package com.project.iosephknecht.singleselectionrecyclerview.presentation.viewMo
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.project.iosephknecht.singleselectionrecyclerview.data.SomeCategory
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeModel
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.contract.MainContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.StateController
@@ -53,7 +54,7 @@ class MainViewModel : ViewModel(),
                 SelectableViewState(
                     someModel = SomeModel(
                         UUID.randomUUID(),
-                        label = "label_${newIndex}",
+                        label = SomeCategory.CATEGORY1,
                         value = "value_${newIndex}"
                     )
                 )
@@ -82,7 +83,7 @@ class MainViewModel : ViewModel(),
             ?.apply {
                 someModel = SomeModel(
                     uuid = uuid,
-                    label = label,
+                    label = originalLabel,
                     value = changedValue!!.toString()
                 )
 
@@ -118,14 +119,13 @@ class MainViewModel : ViewModel(),
 
     private fun generateList(): List<SomeModel> {
         val list = mutableListOf<SomeModel>()
-        val label = "label"
         val value = "value"
 
         for (i in 0..100) {
             list.add(
                 SomeModel(
                     uuid = UUID.randomUUID(),
-                    label = "${label}_$i",
+                    label = SomeCategory.CATEGORY1,
                     value = "${value}_$i"
                 )
             )

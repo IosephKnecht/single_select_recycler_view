@@ -6,7 +6,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
+import android.widget.Spinner
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.SelectableViewState
@@ -21,7 +21,7 @@ class SelectableBinder(
     fun bind(
         viewState: SelectableViewState,
         itemView: View,
-        labelTextView: TextView?,
+        labelSpinner: Spinner?,
         valueTextView: EditText?,
         saveButton: ImageView?,
         removeButton: ImageView?
@@ -72,8 +72,8 @@ class SelectableBinder(
 
         itemView.setOnClickListener(selectedClick)
 
-        labelTextView?.apply {
-            setOnClickListener(selectedClick)
+        labelSpinner?.apply {
+            // TODO: handle spinner click
         }
 
         valueTextView?.apply {

@@ -126,7 +126,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showRemoveConfirmDialog(viewState: SelectableViewState) {
         val dialog = AlertDialog.Builder(this)
-            .setTitle(getString(R.string.remove_confirm_title, viewState.label))
+            .setTitle(getString(R.string.remove_confirm_title, viewState.originalLabel))
             .setPositiveButton(android.R.string.yes) { dialog, _ ->
                 viewModel.confirmRemove()
                 dialog.dismiss()
