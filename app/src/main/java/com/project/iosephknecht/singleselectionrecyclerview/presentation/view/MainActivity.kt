@@ -33,10 +33,13 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
         adapter = SelectableAdapter(
-            selectableBinder = SelectableBinder { uuid ->
-                viewModel.select(uuid)
-            },
-            removeAction = viewModel::remove
+            selectableBinder = SelectableBinder(
+                selectableColor = R.color.accent,
+                unselectableColor = android.R.color.white,
+                selectableAction = viewModel::select,
+                removeAction = viewModel::remove,
+                applyChangesAction = viewModel::applyChanges
+            )
         )
 
         recyclerView = findViewById<RecyclerView>(R.id.recycler_view)?.apply {

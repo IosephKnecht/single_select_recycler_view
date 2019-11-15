@@ -5,7 +5,7 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.Se
 import java.util.*
 
 data class SelectableViewState(
-    val someModel: SomeModel,
+    var someModel: SomeModel,
     override var isSelected: Boolean = false
 ) : SelectableItem {
 
@@ -15,6 +15,12 @@ data class SelectableViewState(
     val label: String
         get() = someModel.label
 
-    val value: String
+    val originalValue: CharSequence
         get() = someModel.value
+
+    var changedValue: CharSequence? = null
+
+    fun hasChanges(): Boolean {
+        return changedValue != null
+    }
 }

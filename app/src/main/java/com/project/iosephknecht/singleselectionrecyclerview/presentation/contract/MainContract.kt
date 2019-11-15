@@ -11,11 +11,13 @@ interface MainContract {
         val diff: LiveData<Array<UUID>>
         val confirmRemoveDialog: LiveData<SelectableViewState>
 
-        fun select(uuid: UUID)
+        fun select(viewState: SelectableViewState)
         fun add()
         fun confirmAdd()
         fun remove(selectableViewState: SelectableViewState)
         fun confirmRemove()
         fun declineRemove()
+
+        fun applyChanges(viewState: SelectableViewState)
     }
 }

@@ -3,6 +3,7 @@ package com.project.iosephknecht.singleselectionrecyclerview.presentation.view.a
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -11,8 +12,7 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewMod
 import java.util.*
 
 class SelectableAdapter(
-    private val selectableBinder: SelectableBinder,
-    private val removeAction: (viewState: SelectableViewState) -> Unit
+    private val selectableBinder: SelectableBinder
 ) : RecyclerView.Adapter<SelectableAdapter.SelectableViewHolder>() {
 
     private var items: List<SelectableViewState> = emptyList()
@@ -22,7 +22,10 @@ class SelectableAdapter(
             .inflate(R.layout.item_select, parent, false)
 
         return SelectableViewHolder(
-            itemView
+            itemView,
+            SelectableViewStateTextWatcher { value ->
+                changedValue = value
+            }
         )
     }
 
@@ -31,20 +34,32 @@ class SelectableAdapter(
     override fun onBindViewHolder(holder: SelectableViewHolder, position: Int) {
         val viewState = items[position]
 
-        selectableBinder.bind(
-            viewState,
-            holder.itemView,
-            holder.labelTextView,
-            holder.valueTextView
-        )
-
         with(holder) {
+            selectableBinder.bind(
+                viewState = viewState,
+                itemView = itemView,
+                labelTextView = labelTextView,
+                valueTextView = valueTextView,
+                saveButton = saveButton,
+                removeButton = removeButton
+            )
+
+
             labelTextView?.setText(viewState.label)
-            valueTextView?.setText(viewState.value)
-            removeButton?.setOnClickListener {
-                removeAction.invoke(viewState)
+
+            valueTextView?.apply {
+                holder.bind(viewState)
+                setText(viewState.changedValue ?: viewState.originalValue)
             }
+
+            saveButton?.visibility = if (viewState.isSelected) View.VISIBLE else View.GONE
         }
+    }
+
+    override fun onViewRecycled(holder: SelectableViewHolder) {
+        super.onViewRecycled(holder)
+
+        holder.unbind()
     }
 
     fun reload(items: List<SelectableViewState>) {
@@ -67,9 +82,26 @@ class SelectableAdapter(
     }
 
 
-    class SelectableViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class SelectableViewHolder(
+        itemView: View,
+        private val valueTextWatcher: SelectableViewStateTextWatcher
+    ) : RecyclerView.ViewHolder(itemView) {
+
         val labelTextView: TextView? = itemView.findViewById(R.id.label)
-        val valueTextView: TextView? = itemView.findViewById(R.id.value)
+        val valueTextView: EditText? = itemView.findViewById(R.id.value)
         val removeButton: ImageView? = itemView.findViewById(R.id.delete_button)
+        val saveButton: ImageView? = itemView.findViewById(R.id.save_button)
+
+        init {
+            valueTextView?.addTextChangedListener(valueTextWatcher)
+        }
+
+        fun bind(viewState: SelectableViewState) {
+            valueTextWatcher.viewState = viewState
+        }
+
+        fun unbind() {
+            valueTextWatcher.viewState = null
+        }
     }
 }

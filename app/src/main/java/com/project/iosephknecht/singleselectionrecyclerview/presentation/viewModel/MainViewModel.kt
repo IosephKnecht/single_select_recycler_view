@@ -35,8 +35,14 @@ class MainViewModel : ViewModel(),
         stateController.release()
     }
 
-    override fun select(uuid: UUID) {
-        stateController.selectItem(uuid)
+    override fun select(viewState: SelectableViewState) {
+        stateController.selectableItem
+            ?.takeIf { it.hasChanges() }
+            ?.also {
+                it.changedValue = null
+            }
+
+        stateController.selectItem(viewState.uuid)
     }
 
     override fun add() {
@@ -71,16 +77,35 @@ class MainViewModel : ViewModel(),
         confirmRemoveDialog.value = null
     }
 
+    override fun applyChanges(viewState: SelectableViewState) {
+        viewState.takeIf { it.hasChanges() }
+            ?.apply {
+                someModel = SomeModel(
+                    uuid = uuid,
+                    label = label,
+                    value = changedValue!!.toString()
+                )
+
+                changedValue = null
+            }
+
+        if (stateController.needAddConfirm()) {
+            stateController.confirmAdd()
+        } else {
+            stateController.resetSelect()
+        }
+    }
+
     override fun onUpdate(list: List<SelectableViewState>, addNewElement: Boolean) {
         this.items.value = ArrayList(list)
         this.addState.value = addNewElement
     }
 
-    override fun onSingleSelect(uuid: UUID) {
+    override fun onSingleChange(uuid: UUID) {
         diff.value = arrayOf(uuid)
     }
 
-    override fun onSwapSelect(unselectUUID: UUID, selectUUID: UUID) {
+    override fun onPairChange(unselectUUID: UUID, selectUUID: UUID) {
         diff.value = arrayOf(
             unselectUUID,
             selectUUID

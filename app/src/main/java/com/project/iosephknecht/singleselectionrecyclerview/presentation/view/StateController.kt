@@ -9,9 +9,17 @@ class StateController<T : SelectableItem>(
 ) {
 
     private var currentState: State = Unselected()
-    private var selectableItem: T? = null
+
+    var selectableItem: T? = null
+        private set
 
     private val mutableItems: MutableList<T> = ArrayList(items)
+
+    /* TODO: bad solve, necessary for the caller to understand whether they want to call method
+    *   resetSelect() or confirmAdd() on ProcessAdd state's */
+    fun needAddConfirm(): Boolean {
+        return currentState.run { this as? StateController<*>.ProcessAdd } != null
+    }
 
     fun selectItem(uuid: UUID) {
         currentState.select(uuid)
@@ -33,28 +41,29 @@ class StateController<T : SelectableItem>(
         currentState.confirmRemove()
     }
 
+    fun resetSelect() {
+        currentState.resetSelected()
+    }
+
     fun release() {
         currentState.release()
     }
 
     interface ViewController<T : SelectableItem> {
-        fun onSingleSelect(uuid: UUID)
-        fun onSwapSelect(unselectUUID: UUID, selectUUID: UUID)
+        fun onSingleChange(uuid: UUID)
+        fun onPairChange(unselectUUID: UUID, selectUUID: UUID)
         fun onUpdate(list: List<T>, addNewElement: Boolean)
         fun onRemove(model: T)
     }
 
     private interface State {
         fun select(uuid: UUID) {}
+        fun resetSelected() {}
         fun add(newItem: SelectableItem) {}
         fun confirmAdd() {}
         fun remove(removeItem: SelectableItem) {}
         fun confirmRemove() {}
         fun release() {}
-    }
-
-    private fun T.markSelect(isSelected: Boolean): T {
-        return this.apply { this.isSelected = isSelected }
     }
 
     private inner class Unselected : State {
@@ -64,7 +73,7 @@ class StateController<T : SelectableItem>(
                     isSelected = true
                 }
 
-                viewController.onSingleSelect(selectableItem!!.uuid)
+                viewController.onSingleChange(selectableItem!!.uuid)
 
                 currentState = Selected()
             }
@@ -110,7 +119,7 @@ class StateController<T : SelectableItem>(
                     isSelected = true
                 }
 
-                viewController.onSwapSelect(
+                viewController.onPairChange(
                     unselectUUID = unselectedUUID,
                     selectUUID = viewState.uuid
                 )
@@ -142,6 +151,18 @@ class StateController<T : SelectableItem>(
 
                 currentState = ProcessDelete(viewState)
             }
+        }
+
+        override fun resetSelected() {
+            val uuid = selectableItem!!.run {
+                isSelected = false
+                return@run this.uuid
+            }
+
+            selectableItem = null
+            viewController.onSingleChange(uuid)
+
+            currentState = Unselected()
         }
 
         override fun release() {
@@ -181,6 +202,17 @@ class StateController<T : SelectableItem>(
             }
         }
 
+        override fun resetSelected() {
+            mutableItems.remove(selectableItem!!)
+
+            selectableItem!!.isSelected = false
+            selectableItem = null
+
+            viewController.onUpdate(mutableItems, false)
+
+            currentState = Unselected()
+        }
+
         override fun release() {
             selectableItem = null
             currentState = Release()
@@ -208,7 +240,7 @@ class StateController<T : SelectableItem>(
                         isSelected = true
                     }
 
-                    viewController.onSwapSelect(
+                    viewController.onPairChange(
                         unselectUUID = unselectUUID,
                         selectUUID = viewState.uuid
                     )
@@ -222,11 +254,25 @@ class StateController<T : SelectableItem>(
                         isSelected = true
                     }
 
-                    viewController.onSingleSelect(viewState.uuid)
+                    viewController.onSingleChange(viewState.uuid)
                 }
 
                 currentState = Selected()
             }
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        override fun add(newItem: SelectableItem) {
+            selectableItem?.isSelected = false
+
+            selectableItem = newItem.apply {
+                isSelected = true
+            } as T
+
+            mutableItems.add(newItem as T)
+            viewController.onUpdate(mutableItems, true)
+
+            currentState = ProcessAdd()
         }
 
         @Suppress("UNCHECKED_CAST")
@@ -243,6 +289,25 @@ class StateController<T : SelectableItem>(
             currentState = selectableItem?.run {
                 Selected()
             } ?: Unselected()
+        }
+
+        override fun resetSelected() {
+            selectableItem?.takeIf { it.uuid == removeItem.uuid }
+                ?.also { viewState ->
+                    val uuid = viewState.run {
+                        isSelected = false
+                        return@run this.uuid
+                    }
+
+                    viewController.onSingleChange(uuid)
+
+                    currentState = Unselected()
+                }
+        }
+
+        override fun release() {
+            selectableItem = null
+            currentState = Release()
         }
     }
 
