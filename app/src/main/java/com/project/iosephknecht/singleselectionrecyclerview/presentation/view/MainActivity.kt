@@ -12,10 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.project.iosephknecht.singleselectionrecyclerview.R
+import com.project.iosephknecht.singleselectionrecyclerview.domain.FrivolousValidateService
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.contract.MainContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.adapter.SelectableAdapter
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.adapter.SelectableBinder
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.MainViewModel
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.MainViewModelFactory
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.SelectableViewState
 
 class MainActivity : AppCompatActivity() {
@@ -30,12 +32,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        val factory = MainViewModelFactory(FrivolousValidateService())
+
+        viewModel = ViewModelProviders.of(this, factory).get(MainViewModel::class.java)
 
         adapter = SelectableAdapter(
             selectableBinder = SelectableBinder(
                 selectableColor = R.color.accent,
                 unselectableColor = android.R.color.white,
+                selectedTranslationZ = 20f,
                 selectableAction = viewModel::select,
                 removeAction = viewModel::remove,
                 applyChangesAction = viewModel::applyChanges
@@ -126,7 +131,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showRemoveConfirmDialog(viewState: SelectableViewState) {
         val dialog = AlertDialog.Builder(this)
-            .setTitle(getString(R.string.remove_confirm_title, viewState.originalLabel))
+            .setTitle(getString(R.string.remove_confirm_title, viewState.changedLabel))
             .setPositiveButton(android.R.string.yes) { dialog, _ ->
                 viewModel.confirmRemove()
                 dialog.dismiss()

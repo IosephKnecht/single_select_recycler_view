@@ -4,12 +4,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeCategory
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeModel
+import com.project.iosephknecht.singleselectionrecyclerview.domain.ValidateService
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.contract.MainContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.StateController
+import io.reactivex.Single
 import java.util.*
 import kotlin.collections.ArrayList
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Function
+import io.reactivex.schedulers.Schedulers
 
-class MainViewModel : ViewModel(),
+class MainViewModel(
+    private val validateService: ValidateService
+) : ViewModel(),
     MainContract.ViewModel,
     StateController.ViewController<SelectableViewState> {
 
@@ -26,6 +34,8 @@ class MainViewModel : ViewModel(),
         viewController = this
     )
 
+    private var disposable: Disposable? = null
+
 
     override val items = MutableLiveData(generatedList)
     override val addState = MutableLiveData(false)
@@ -39,10 +49,7 @@ class MainViewModel : ViewModel(),
     override fun select(viewState: SelectableViewState) {
         stateController.selectableItem
             ?.takeIf { it.hasChanges() }
-            ?.also {
-                it.changedLabel = null
-                it.changedValue = null
-            }
+            ?.reset()
 
         stateController.selectItem(viewState.uuid)
     }
@@ -80,21 +87,7 @@ class MainViewModel : ViewModel(),
     }
 
     override fun applyChanges(viewState: SelectableViewState) {
-        viewState.takeIf { it.hasChanges() }
-            ?.apply {
-                val applyingChangesModel = viewState.buildChangedModel()
-
-                someModel = applyingChangesModel
-
-                changedLabel = null
-                changedValue = null
-            }
-
-        if (stateController.needAddConfirm()) {
-            stateController.confirmAdd()
-        } else {
-            stateController.resetSelect()
-        }
+        validate(viewState)
     }
 
     override fun onUpdate(list: List<SelectableViewState>, addNewElement: Boolean) {
@@ -117,9 +110,46 @@ class MainViewModel : ViewModel(),
         confirmRemoveDialog.value = model
     }
 
+    private fun validate(viewState: SelectableViewState) {
+
+        if (viewState.hasChanges()) {
+            val newModel = viewState.buildChangedModel()
+
+            disposable?.dispose()
+
+            disposable = Single.just(newModel)
+                .flatMap(Function<SomeModel, Single<Boolean>> { validateService.validate(it.value) })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ isValid ->
+                    if (isValid) {
+                        viewState.applyChanges(newModel)
+
+                        if (stateController.needAddConfirm()) {
+                            stateController.confirmAdd()
+                        } else {
+                            stateController.resetSelect()
+                        }
+                    } else {
+                        viewState.isValid = false
+                        onSingleChange(viewState.uuid)
+                    }
+                }, { e ->
+                    e.printStackTrace()
+                })
+
+        } else {
+            if (stateController.needAddConfirm()) {
+                stateController.confirmAdd()
+            } else {
+                stateController.resetSelect()
+            }
+        }
+    }
+
     private fun SelectableViewState.buildChangedModel(): SomeModel {
-        val label = changedLabel ?: originalLabel
-        val value = changedValue ?: originalLabel
+        val label = changedLabel
+        val value = changedValue
 
         return SomeModel(
             uuid = uuid,

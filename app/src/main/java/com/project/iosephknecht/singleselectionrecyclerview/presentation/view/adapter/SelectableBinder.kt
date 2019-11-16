@@ -9,11 +9,15 @@ import android.widget.ImageView
 import android.widget.Spinner
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import com.google.android.material.snackbar.Snackbar
+import com.project.iosephknecht.singleselectionrecyclerview.R
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.SelectableViewState
 
 class SelectableBinder(
     @ColorRes private val selectableColor: Int,
     @ColorRes private val unselectableColor: Int,
+    private val selectedTranslationZ: Float,
     private val selectableAction: (viewState: SelectableViewState) -> Unit,
     private val removeAction: (viewState: SelectableViewState) -> Unit,
     private val applyChangesAction: (viewState: SelectableViewState) -> Unit
@@ -29,6 +33,10 @@ class SelectableBinder(
         val context = itemView.context
 
         val backgroundColor = if (viewState.isSelected) selectableColor else unselectableColor
+
+        val valueBackground = if (viewState.isValid)
+            R.drawable.bg_edittext_border else R.drawable.bg_edittext_error
+
         val inputType = if (viewState.isSelected) InputType.TYPE_CLASS_TEXT else InputType.TYPE_NULL
 
         val selectedClick = View.OnClickListener {
@@ -72,6 +80,8 @@ class SelectableBinder(
 
         itemView.setOnClickListener(selectedClick)
 
+        itemView.translationZ = if (viewState.isSelected) selectedTranslationZ else 0f
+
         labelSpinner?.apply {
             isEnabled = viewState.isSelected
         }
@@ -88,6 +98,8 @@ class SelectableBinder(
 
             setInputType(inputType)
             setOnClickListener(valueClick)
+
+            background = ContextCompat.getDrawable(context, valueBackground)
         }
 
         saveButton?.setOnClickListener(saveClick)

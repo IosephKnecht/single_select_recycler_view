@@ -23,10 +23,14 @@ class SelectableAdapter(
         return SelectableViewHolder(
             itemView,
             SelectableSpinnerOnClickItemListener { ordinal ->
-                changedLabel = SomeCategory.values()[ordinal]
+                if (ordinal != changedLabel?.ordinal) {
+                    changedLabel = SomeCategory.values()[ordinal]
+                }
             },
             SelectableViewStateTextWatcher { value ->
-                changedValue = value
+                value?.takeIf { it != changedValue }?.also {
+                    changedValue = it
+                }
             }
         )
     }
@@ -35,6 +39,9 @@ class SelectableAdapter(
 
     override fun onBindViewHolder(holder: SelectableViewHolder, position: Int) {
         val viewState = items[position]
+
+        holder.unbindValueTextWatcher()
+        holder.unbindSpinnerClickListener()
 
         with(holder) {
             selectableBinder.bind(
@@ -48,22 +55,25 @@ class SelectableAdapter(
 
 
             labelSpinner?.setSelection(
-                viewState.changedLabel?.ordinal ?: viewState.originalLabel.ordinal
+                viewState.changedLabel.ordinal
             )
 
             valueTextView?.apply {
-                holder.bind(viewState)
-                setText(viewState.changedValue ?: viewState.originalValue)
+                setText(viewState.changedValue)
             }
 
             saveButton?.visibility = if (viewState.isSelected) View.VISIBLE else View.GONE
+
+            holder.bindValueTextWatcher(viewState)
+            holder.bindSpinnerClickListener(viewState)
         }
     }
 
     override fun onViewRecycled(holder: SelectableViewHolder) {
         super.onViewRecycled(holder)
 
-        holder.unbind()
+        holder.unbindValueTextWatcher()
+        holder.unbindSpinnerClickListener()
     }
 
     fun reload(items: List<SelectableViewState>) {
@@ -112,19 +122,34 @@ class SelectableAdapter(
             arrayAdapter.setDropDownViewResource(R.layout.item_spinner_label_dropdown)
 
             labelSpinner?.adapter = arrayAdapter
-
-            labelSpinner?.setOnItemSelectedListener(spinnerClickListener)
-            valueTextView?.addTextChangedListener(valueTextWatcher)
         }
 
-        fun bind(viewState: SelectableViewState) {
-            spinnerClickListener.viewState = viewState
-            valueTextWatcher.viewState = viewState
+        fun bindValueTextWatcher(viewState: SelectableViewState) {
+            valueTextView?.apply {
+                valueTextWatcher.viewState = viewState
+                addTextChangedListener(valueTextWatcher)
+            }
         }
 
-        fun unbind() {
-            spinnerClickListener.viewState = null
-            valueTextWatcher.viewState = null
+        fun unbindValueTextWatcher() {
+            valueTextView?.apply {
+                valueTextWatcher.viewState = null
+                removeTextChangedListener(valueTextWatcher)
+            }
+        }
+
+        fun bindSpinnerClickListener(viewState: SelectableViewState) {
+            labelSpinner?.apply {
+                spinnerClickListener.viewState = viewState
+                onItemSelectedListener = spinnerClickListener
+            }
+        }
+
+        fun unbindSpinnerClickListener() {
+            labelSpinner?.apply {
+                spinnerClickListener.viewState = null
+                onItemSelectedListener = null
+            }
         }
     }
 }
