@@ -24,6 +24,6 @@ data class SelectableViewState(
     var changedValue: CharSequence? = null
 
     fun hasChanges(): Boolean {
-        return changedValue != null
+        return changedValue != null || changedLabel != null
     }
 }

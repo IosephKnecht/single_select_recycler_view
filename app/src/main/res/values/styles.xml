@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/accent</item>
     </style>
 
+    <style name="CustomSpinnerStyle" parent="@android:style/Widget.Spinner">
+        <item name="android:background">@drawable/bg_spinner_selector</item>
+        <item name="android:spinnerMode">dropdown</item>
+    </style>
+
 </resources>

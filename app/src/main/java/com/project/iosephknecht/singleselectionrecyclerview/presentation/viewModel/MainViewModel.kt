@@ -40,6 +40,7 @@ class MainViewModel : ViewModel(),
         stateController.selectableItem
             ?.takeIf { it.hasChanges() }
             ?.also {
+                it.changedLabel = null
                 it.changedValue = null
             }
 
@@ -81,12 +82,11 @@ class MainViewModel : ViewModel(),
     override fun applyChanges(viewState: SelectableViewState) {
         viewState.takeIf { it.hasChanges() }
             ?.apply {
-                someModel = SomeModel(
-                    uuid = uuid,
-                    label = originalLabel,
-                    value = changedValue!!.toString()
-                )
+                val applyingChangesModel = viewState.buildChangedModel()
 
+                someModel = applyingChangesModel
+
+                changedLabel = null
                 changedValue = null
             }
 
@@ -115,6 +115,17 @@ class MainViewModel : ViewModel(),
 
     override fun onRemove(model: SelectableViewState) {
         confirmRemoveDialog.value = model
+    }
+
+    private fun SelectableViewState.buildChangedModel(): SomeModel {
+        val label = changedLabel ?: originalLabel
+        val value = changedValue ?: originalLabel
+
+        return SomeModel(
+            uuid = uuid,
+            label = label,
+            value = value.toString()
+        )
     }
 
     private fun generateList(): List<SomeModel> {

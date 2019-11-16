@@ -73,7 +73,7 @@ class SelectableBinder(
         itemView.setOnClickListener(selectedClick)
 
         labelSpinner?.apply {
-            // TODO: handle spinner click
+            isEnabled = viewState.isSelected
         }
 
         valueTextView?.apply {
