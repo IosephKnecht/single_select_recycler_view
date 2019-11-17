@@ -34,8 +34,7 @@ class MainViewModel(
         viewController = this
     )
 
-    private var disposable: Disposable? = null
-
+    private var validateDisposable: Disposable? = null
 
     override val items = MutableLiveData(generatedList)
     override val addState = MutableLiveData(false)
@@ -47,6 +46,8 @@ class MainViewModel(
     }
 
     override fun select(viewState: SelectableViewState) {
+        validateDisposable?.dispose()
+
         stateController.selectableItem
             ?.takeIf { it.hasChanges() }
             ?.reset()
@@ -115,12 +116,18 @@ class MainViewModel(
         if (viewState.hasChanges()) {
             val newModel = viewState.buildChangedModel()
 
-            disposable?.dispose()
+            markAsLoading(viewState)
 
-            disposable = Single.just(newModel)
+            validateDisposable?.dispose()
+
+            validateDisposable = Single.just(newModel)
                 .flatMap(Function<SomeModel, Single<Boolean>> { validateService.validate(it.value) })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnDispose {
+                    // FIXME: bottleneck
+                    viewState.reset()
+                }
                 .subscribe({ isValid ->
                     if (isValid) {
                         viewState.applyChanges(newModel)
@@ -131,7 +138,9 @@ class MainViewModel(
                             stateController.resetSelect()
                         }
                     } else {
+                        // FIXME: bottleneck
                         viewState.isValid = false
+                        viewState.isLoading = false
                         onSingleChange(viewState.uuid)
                     }
                 }, { e ->
@@ -145,6 +154,11 @@ class MainViewModel(
                 stateController.resetSelect()
             }
         }
+    }
+
+    private fun markAsLoading(viewState: SelectableViewState) {
+        viewState.isLoading = true
+        onSingleChange(viewState.uuid)
     }
 
     private fun SelectableViewState.buildChangedModel(): SomeModel {

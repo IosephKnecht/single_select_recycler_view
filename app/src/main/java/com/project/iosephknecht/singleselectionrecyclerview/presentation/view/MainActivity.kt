@@ -16,6 +16,7 @@ import com.project.iosephknecht.singleselectionrecyclerview.domain.FrivolousVali
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.contract.MainContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.adapter.SelectableAdapter
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.adapter.SelectableBinder
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.adapter.ValidateBinder
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.MainViewModel
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.MainViewModelFactory
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.SelectableViewState
@@ -41,9 +42,14 @@ class MainActivity : AppCompatActivity() {
                 selectableColor = R.color.accent,
                 unselectableColor = android.R.color.white,
                 selectedTranslationZ = 20f,
+                unselectedTranslationZ = 0f,
                 selectableAction = viewModel::select,
                 removeAction = viewModel::remove,
                 applyChangesAction = viewModel::applyChanges
+            ),
+            validateBinder = ValidateBinder(
+                defaultBackground = R.drawable.bg_edittext_border,
+                invalidBackground = R.drawable.bg_edittext_error
             )
         )
 

@@ -1,62 +1,51 @@
 package com.project.iosephknecht.singleselectionrecyclerview.presentation.view.adapter
 
 import android.content.Context
-import android.text.InputType
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Spinner
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
-import com.google.android.material.snackbar.Snackbar
-import com.project.iosephknecht.singleselectionrecyclerview.R
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.CustomEditTextView
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.SelectableViewState
 
 class SelectableBinder(
     @ColorRes private val selectableColor: Int,
     @ColorRes private val unselectableColor: Int,
     private val selectedTranslationZ: Float,
+    private val unselectedTranslationZ: Float,
     private val selectableAction: (viewState: SelectableViewState) -> Unit,
     private val removeAction: (viewState: SelectableViewState) -> Unit,
     private val applyChangesAction: (viewState: SelectableViewState) -> Unit
 ) {
+
     fun bind(
-        viewState: SelectableViewState,
-        itemView: View,
-        labelSpinner: Spinner?,
-        valueTextView: EditText?,
-        saveButton: ImageView?,
-        removeButton: ImageView?
+        holder: SelectableAdapter.SelectableViewHolder,
+        viewState: SelectableViewState
     ) {
-        val context = itemView.context
+        val context = holder.itemView.context
 
-        val backgroundColor = if (viewState.isSelected) selectableColor else unselectableColor
+        val isSelected = viewState.isSelected
 
-        val valueBackground = if (viewState.isValid)
-            R.drawable.bg_edittext_border else R.drawable.bg_edittext_error
-
-        val inputType = if (viewState.isSelected) InputType.TYPE_CLASS_TEXT else InputType.TYPE_NULL
+        val backgroundColor = if (isSelected) selectableColor else unselectableColor
 
         val selectedClick = View.OnClickListener {
             selectableAction.invoke(viewState)
-        }.takeIf { !viewState.isSelected }
+        }.takeIf { !isSelected }
 
         val saveClick = View.OnClickListener {
             applyChangesAction.invoke(viewState)
-        }.takeIf { viewState.isSelected }
+        }.takeIf { isSelected }
 
         val valueClick = View.OnClickListener { view ->
             view as EditText
-            view.requestFocus()
             selectableAction.invoke(viewState)
 
             view.post {
                 view.setSelection(view.length())
                 view.requestFocus()
             }
-        }.takeIf { !viewState.isSelected }
+        }.takeIf { !isSelected }
 
         val removeClick = View.OnClickListener {
             removeAction.invoke(viewState)
@@ -69,41 +58,33 @@ class SelectableBinder(
 
                 service?.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
             }
-        }.takeIf { viewState.isSelected }
+        }.takeIf { isSelected }
 
-        itemView.setBackgroundColor(
-            ContextCompat.getColor(
-                context,
-                backgroundColor
-            )
-        )
+        val transitionZValue = if (isSelected) selectedTranslationZ else unselectedTranslationZ
 
-        itemView.setOnClickListener(selectedClick)
+        with(holder) {
+            itemView.apply {
+                setBackgroundColor(
+                    ContextCompat.getColor(
+                        context,
+                        backgroundColor
+                    )
+                )
 
-        itemView.translationZ = if (viewState.isSelected) selectedTranslationZ else 0f
+                setOnClickListener(selectedClick)
 
-        labelSpinner?.apply {
-            isEnabled = viewState.isSelected
-        }
-
-        valueTextView?.apply {
-            onFocusChangeListener = keyboardFocusListener
-            isFocusableInTouchMode = viewState.isSelected
-
-            if (!viewState.isSelected) {
-                post {
-                    clearFocus()
-                }
+                translationZ = transitionZValue
             }
 
-            setInputType(inputType)
-            setOnClickListener(valueClick)
+            labelSpinner?.isEnabled = isSelected
 
-            background = ContextCompat.getDrawable(context, valueBackground)
+            customEditText?.apply {
+                setValueFocusable(isFocusableInTouchMode = isSelected)
+                setApplyClickListener(saveClick)
+                setValueClickListener(valueClick)
+                setRemoveClickListener(removeClick)
+                setValueFocusChangeListener(keyboardFocusListener)
+            }
         }
-
-        saveButton?.setOnClickListener(saveClick)
-
-        removeButton?.setOnClickListener(removeClick)
     }
 }

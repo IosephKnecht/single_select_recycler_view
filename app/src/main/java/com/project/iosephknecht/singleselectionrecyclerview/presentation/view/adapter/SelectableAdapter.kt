@@ -7,11 +7,13 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.project.iosephknecht.singleselectionrecyclerview.R
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeCategory
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.CustomEditTextView
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.SelectableViewState
 import java.util.*
 
 class SelectableAdapter(
-    private val selectableBinder: SelectableBinder
+    private val selectableBinder: SelectableBinder,
+    private val validateBinder: ValidateBinder
 ) : RecyclerView.Adapter<SelectableAdapter.SelectableViewHolder>() {
 
     private var items: List<SelectableViewState> = emptyList()
@@ -46,11 +48,12 @@ class SelectableAdapter(
         with(holder) {
             selectableBinder.bind(
                 viewState = viewState,
-                itemView = itemView,
-                labelSpinner = labelSpinner,
-                valueTextView = valueTextView,
-                saveButton = saveButton,
-                removeButton = removeButton
+                holder = holder
+            )
+
+            validateBinder.bind(
+                holder = holder,
+                isValid = viewState.isValid
             )
 
 
@@ -58,11 +61,16 @@ class SelectableAdapter(
                 viewState.changedLabel.ordinal
             )
 
-            valueTextView?.apply {
-                setText(viewState.changedValue)
+            val customEditTextState = when {
+                viewState.isLoading -> CustomEditTextView.State.LOADING
+                viewState.isSelected -> CustomEditTextView.State.EDITABLE
+                else -> CustomEditTextView.State.READABLE
             }
 
-            saveButton?.visibility = if (viewState.isSelected) View.VISIBLE else View.GONE
+            customEditText?.apply {
+                setText(viewState.changedValue)
+                setState(customEditTextState)
+            }
 
             holder.bindValueTextWatcher(viewState)
             holder.bindSpinnerClickListener(viewState)
@@ -102,9 +110,7 @@ class SelectableAdapter(
         private val valueTextWatcher: SelectableViewStateTextWatcher
     ) : RecyclerView.ViewHolder(itemView) {
         val labelSpinner: Spinner? = itemView.findViewById(R.id.label)
-        val valueTextView: EditText? = itemView.findViewById(R.id.value)
-        val removeButton: ImageView? = itemView.findViewById(R.id.delete_button)
-        val saveButton: ImageView? = itemView.findViewById(R.id.save_button)
+        val customEditText: CustomEditTextView? = itemView.findViewById(R.id.custom_edit_text_view)
 
         private val arrayAdapter: ArrayAdapter<String>
 
@@ -125,16 +131,16 @@ class SelectableAdapter(
         }
 
         fun bindValueTextWatcher(viewState: SelectableViewState) {
-            valueTextView?.apply {
+            customEditText?.apply {
                 valueTextWatcher.viewState = viewState
-                addTextChangedListener(valueTextWatcher)
+                addValueTextWatcher(valueTextWatcher)
             }
         }
 
         fun unbindValueTextWatcher() {
-            valueTextView?.apply {
+            customEditText?.apply {
                 valueTextWatcher.viewState = null
-                removeTextChangedListener(valueTextWatcher)
+                removeValueTextWatcher(valueTextWatcher)
             }
         }
 
