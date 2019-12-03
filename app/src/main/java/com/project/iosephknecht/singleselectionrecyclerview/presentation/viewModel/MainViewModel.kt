@@ -6,7 +6,7 @@ import com.project.iosephknecht.singleselectionrecyclerview.data.SomeCategory
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeModel
 import com.project.iosephknecht.singleselectionrecyclerview.domain.ValidateService
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.contract.MainContract
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.StateController
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.SingleSelectionController
 import io.reactivex.Single
 import java.util.*
 import kotlin.collections.ArrayList
@@ -19,7 +19,7 @@ class MainViewModel(
     private val validateService: ValidateService
 ) : ViewModel(),
     MainContract.ViewModel,
-    StateController.ViewController<SelectableViewState> {
+    SingleSelectionController.ViewController<SelectableViewState> {
 
     private val generatedList by lazy {
         generateList().map {
@@ -29,7 +29,7 @@ class MainViewModel(
         }
     }
 
-    private val stateController = StateController(
+    private val stateController = SingleSelectionController(
         items = generatedList,
         viewController = this
     )
@@ -48,7 +48,7 @@ class MainViewModel(
     override fun select(viewState: SelectableViewState) {
         validateDisposable?.dispose()
 
-        stateController.selectableItem
+        stateController.currentSelectedItem
             ?.takeIf { it.hasChanges() }
             ?.reset()
 
@@ -59,7 +59,7 @@ class MainViewModel(
         items.value?.also {
             val newIndex = it.size
 
-            stateController.add(
+            stateController.addItem(
                 SelectableViewState(
                     someModel = SomeModel(
                         UUID.randomUUID(),
@@ -72,11 +72,11 @@ class MainViewModel(
     }
 
     override fun confirmAdd() {
-        stateController.confirmAdd()
+        stateController.confirmAddItem()
     }
 
     override fun remove(selectableViewState: SelectableViewState) {
-        stateController.remove(selectableViewState)
+        stateController.removeItem(selectableViewState)
     }
 
     override fun confirmRemove() {
@@ -107,8 +107,8 @@ class MainViewModel(
         )
     }
 
-    override fun onRemove(model: SelectableViewState) {
-        confirmRemoveDialog.value = model
+    override fun onRemove(viewState: SelectableViewState) {
+        confirmRemoveDialog.value = viewState
     }
 
     private fun validate(viewState: SelectableViewState) {
@@ -132,10 +132,10 @@ class MainViewModel(
                     if (isValid) {
                         viewState.applyChanges(newModel)
 
-                        if (stateController.needAddConfirm()) {
-                            stateController.confirmAdd()
+                        if (stateController.isProcessAddState()) {
+                            stateController.confirmAddItem()
                         } else {
-                            stateController.resetSelect()
+                            stateController.resetSelected()
                         }
                     } else {
                         // FIXME: bottleneck
@@ -148,10 +148,10 @@ class MainViewModel(
                 })
 
         } else {
-            if (stateController.needAddConfirm()) {
-                stateController.confirmAdd()
+            if (stateController.isProcessAddState()) {
+                stateController.confirmAddItem()
             } else {
-                stateController.resetSelect()
+                stateController.resetSelected()
             }
         }
     }
