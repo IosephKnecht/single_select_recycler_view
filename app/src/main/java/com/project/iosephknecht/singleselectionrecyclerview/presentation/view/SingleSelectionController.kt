@@ -1,16 +1,15 @@
 package com.project.iosephknecht.singleselectionrecyclerview.presentation.view
 
-import java.util.*
-import kotlin.collections.ArrayList
+import java.io.Serializable
 
-class SingleSelectionController<T : SelectableItem>(
-    items: List<T>,
-    private val viewController: ViewController<T>
+class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
+    items: Collection<T>,
+    private val viewController: ViewController<I, T>
 ) {
 
-    private val mutableItems: MutableList<T> = ArrayList(items)
+    private val mutableItems = LinkedHashMap<I, T>(items.associateBy { it.identifier })
 
-    private var currentState: State<T> = Unselected()
+    private var currentState: State<I, T> = Unselected()
 
     var currentSelectedItem: T? = null
         private set
@@ -18,11 +17,11 @@ class SingleSelectionController<T : SelectableItem>(
     /* TODO: bad solve, necessary for the caller to understand whether they want to call method
     *   resetSelect() or confirmAdd() on ProcessAdd state's */
     fun isProcessAddState(): Boolean {
-        return currentState is SingleSelectionController<*>.ProcessAdd
+        return currentState is SingleSelectionController<*, *>.ProcessAdd
     }
 
-    fun selectItem(uuid: UUID) {
-        currentState.select(uuid)
+    fun selectItem(identifier: I) {
+        currentState.select(identifier)
     }
 
     fun addItem(newItem: T) {
@@ -34,7 +33,7 @@ class SingleSelectionController<T : SelectableItem>(
     }
 
     fun removeItem(preparedItemToRemove: T) {
-        if (preparedItemToRemove.uuid == currentSelectedItem?.uuid) {
+        if (preparedItemToRemove.identifier == currentSelectedItem?.identifier) {
             currentState.currentSelectedRemove()
         } else {
             currentState.unselectedRemove(preparedItemToRemove)
@@ -53,15 +52,15 @@ class SingleSelectionController<T : SelectableItem>(
         currentState.release()
     }
 
-    interface ViewController<T> {
-        fun onSingleChange(uuid: UUID)
-        fun onPairChange(unselectUUID: UUID, selectUUID: UUID)
-        fun onUpdate(list: List<T>, addNewElement: Boolean)
+    interface ViewController<I : Serializable, T : SelectableItem<I>> {
+        fun onSingleChange(identifier: I)
+        fun onPairChange(unselectIdentifier: I, selectIdentifier: I)
+        fun onUpdate(list: Collection<T>, addNewElement: Boolean)
         fun onRemove(viewState: T)
     }
 
-    private interface State<T> {
-        fun select(uuid: UUID) {}
+    private interface State<I : Serializable, T : SelectableItem<I>> {
+        fun select(identifier: I) {}
         fun resetSelected() {}
         fun add(newItem: T) {}
         fun confirmAdd() {}
@@ -71,34 +70,36 @@ class SingleSelectionController<T : SelectableItem>(
         fun release() {}
     }
 
-    private inner class Unselected : State<T> {
+    private inner class Unselected : State<I, T> {
 
-        override fun select(uuid: UUID) {
-            mutableItems.find { it.uuid == uuid }?.also { viewState ->
+        override fun select(identifier: I) {
+            mutableItems[identifier]?.also { viewState ->
                 currentSelectedItem = viewState.apply {
                     isSelected = true
                 }
 
-                viewController.onSingleChange(viewState.uuid)
+                viewController.onSingleChange(viewState.identifier)
 
                 currentState = Selected()
             }
         }
 
         override fun add(newItem: T) {
-            currentSelectedItem = newItem.apply {
-                isSelected = true
+            if (!mutableItems.containsKey(newItem.identifier)) {
+                currentSelectedItem = newItem.apply {
+                    isSelected = true
+                }
+
+                mutableItems[newItem.identifier] = newItem
+
+                viewController.onUpdate(mutableItems.values, addNewElement = true)
+
+                currentState = ProcessAdd()
             }
-
-            mutableItems.add(newItem)
-
-            viewController.onUpdate(mutableItems, addNewElement = true)
-
-            currentState = ProcessAdd()
         }
 
         override fun unselectedRemove(removeItem: T) {
-            mutableItems.find { it.uuid == removeItem.uuid }?.also { viewState ->
+            mutableItems[removeItem.identifier]?.also { viewState ->
                 viewController.onRemove(viewState)
                 currentState = NotCurrentSelectedRemove(viewState)
             }
@@ -111,59 +112,55 @@ class SingleSelectionController<T : SelectableItem>(
         }
     }
 
-    private inner class Selected : State<T> {
+    private inner class Selected : State<I, T> {
 
-        override fun select(uuid: UUID) {
-            if (currentSelectedItem!!.uuid == uuid) return
+        override fun select(identifier: I) {
+            if (currentSelectedItem!!.identifier == identifier) return
 
-            mutableItems.find { it.uuid == uuid }?.also { viewState ->
-                val unselectedUUID = currentSelectedItem!!.run {
+            mutableItems[identifier]?.also { viewState ->
+                val unselectedIdentifier = currentSelectedItem!!.run {
                     isSelected = false
-                    this.uuid
+                    this.identifier
                 }
 
-                val selectedUUID = viewState.run {
+                val selectedIdentifier = viewState.run {
                     isSelected = true
-                    this.uuid
+                    this.identifier
                 }
 
                 currentSelectedItem = viewState
 
-                viewController.onPairChange(unselectedUUID, selectedUUID)
+                viewController.onPairChange(unselectedIdentifier, selectedIdentifier)
             }
         }
 
         override fun resetSelected() {
-            val unselectUUID = currentSelectedItem!!.run {
+            val unselectIdentifier = currentSelectedItem!!.run {
                 isSelected = false
-                this.uuid
+                this.identifier
             }
 
             currentSelectedItem = null
 
-            viewController.onSingleChange(unselectUUID)
+            viewController.onSingleChange(unselectIdentifier)
 
             currentState = Unselected()
         }
 
         override fun add(newItem: T) {
-            // TODO: raise unique error
+            if (!mutableItems.containsKey(newItem.identifier)) {
+                currentSelectedItem!!.isSelected = false
 
-            mutableItems.find { it.uuid == newItem.uuid }
-                .takeIf { it == null }
-                .also {
-                    currentSelectedItem!!.isSelected = false
-
-                    currentSelectedItem = newItem.apply {
-                        isSelected = true
-                    }
-
-                    mutableItems.add(newItem)
-
-                    viewController.onUpdate(mutableItems, addNewElement = true)
-
-                    currentState = ProcessAdd()
+                currentSelectedItem = newItem.apply {
+                    isSelected = true
                 }
+
+                mutableItems[newItem.identifier] = newItem
+
+                viewController.onUpdate(mutableItems.values, addNewElement = true)
+
+                currentState = ProcessAdd()
+            }
         }
 
         override fun currentSelectedRemove() {
@@ -173,7 +170,7 @@ class SingleSelectionController<T : SelectableItem>(
         }
 
         override fun unselectedRemove(removeItem: T) {
-            mutableItems.find { it.uuid == removeItem.uuid }?.also {
+            mutableItems[removeItem.identifier]?.also {
                 viewController.onRemove(removeItem)
 
                 currentState = NotCurrentSelectedRemove(removeItem)
@@ -187,51 +184,60 @@ class SingleSelectionController<T : SelectableItem>(
         }
     }
 
-    private inner class ProcessAdd : State<T> {
+    private inner class ProcessAdd : State<I, T> {
 
-        override fun select(uuid: UUID) {
-            if (currentSelectedItem!!.uuid == uuid) return
+        override fun select(identifier: I) {
+            if (currentSelectedItem!!.identifier == identifier) return
 
-            mutableItems.find { it.uuid == uuid }?.also { viewState ->
-                mutableItems.remove(currentSelectedItem!!.apply { isSelected = false })
+            mutableItems[identifier]?.also { viewState ->
+                mutableItems.remove(currentSelectedItem!!.run {
+                    isSelected = false
+                    this.identifier
+                })
 
                 currentSelectedItem = viewState.apply {
                     isSelected = true
                 }
 
-                viewController.onUpdate(mutableItems, addNewElement = false)
+                viewController.onUpdate(mutableItems.values, addNewElement = false)
 
                 currentState = Selected()
             }
         }
 
         override fun confirmAdd() {
-            val unselectUUID = currentSelectedItem!!.run {
+            val unselectIdentifier = currentSelectedItem!!.run {
                 isSelected = false
-                this.uuid
+                this.identifier
             }
 
             currentSelectedItem = null
 
             // FIXME: not necessary full update, need change onSingleUpdate()
-            viewController.onUpdate(mutableItems, addNewElement = false)
+            viewController.onUpdate(mutableItems.values, addNewElement = false)
 
             currentState = Unselected()
         }
 
         override fun currentSelectedRemove() {
-            val isSuccess = mutableItems.remove(currentSelectedItem!!.apply { isSelected = false })
+            val previousValue = mutableItems.remove(
+                currentSelectedItem!!.run {
+                    isSelected = false
+                    this.identifier
+                }
+            )
+
             currentSelectedItem = null
 
-            if (isSuccess) {
-                viewController.onUpdate(mutableItems, addNewElement = false)
+            if (previousValue != null) {
+                viewController.onUpdate(mutableItems.values, addNewElement = false)
             }
 
             currentState = Unselected()
         }
 
         override fun unselectedRemove(removeItem: T) {
-            mutableItems.find { it.uuid == removeItem.uuid }?.also { viewState ->
+            mutableItems[removeItem.identifier]?.also { viewState ->
                 viewController.onRemove(viewState)
 
                 currentState = NotCurrentSelectedRemove(viewState)
@@ -239,11 +245,14 @@ class SingleSelectionController<T : SelectableItem>(
         }
 
         override fun resetSelected() {
-            val isSuccess = mutableItems.remove(currentSelectedItem!!.apply { isSelected = false })
+            val previousValue = mutableItems.remove(currentSelectedItem!!.run {
+                isSelected = false
+                this.identifier
+            })
             currentSelectedItem = null
 
-            if (isSuccess) {
-                viewController.onUpdate(mutableItems, addNewElement = false)
+            if (previousValue != null) {
+                viewController.onUpdate(mutableItems.values, addNewElement = false)
             }
 
             currentState = Unselected()
@@ -256,65 +265,64 @@ class SingleSelectionController<T : SelectableItem>(
         }
     }
 
-    private inner class CurrentSelectedRemove : State<T> {
-        override fun select(uuid: UUID) {
-            mutableItems.find { it.uuid == uuid }?.also { viewState ->
-                val unselectUUID = currentSelectedItem!!.run {
+    private inner class CurrentSelectedRemove : State<I, T> {
+        override fun select(identifier: I) {
+            mutableItems[identifier]?.also { viewState ->
+                val unselectIdentifier = currentSelectedItem!!.run {
                     isSelected = false
-                    this.uuid
+                    this.identifier
                 }
 
-                val selectedUUID = viewState.run {
+                val selectedIdentifier = viewState.run {
                     isSelected = true
-                    this.uuid
+                    this.identifier
                 }
 
                 currentSelectedItem = viewState
 
-                viewController.onPairChange(unselectUUID, selectedUUID)
+                viewController.onPairChange(unselectIdentifier, selectedIdentifier)
 
                 currentState = Selected()
             }
         }
 
         override fun resetSelected() {
-            val unselectUUID = currentSelectedItem!!.run {
+            val unselectIdentifier = currentSelectedItem!!.run {
                 isSelected = false
-                this.uuid
+                this.identifier
             }
 
             currentSelectedItem = null
 
-            viewController.onSingleChange(unselectUUID)
+            viewController.onSingleChange(unselectIdentifier)
 
             currentState = Unselected()
         }
 
         override fun add(newItem: T) {
-            // TODO: raise unique error
+            if (!mutableItems.containsKey(newItem.identifier)) {
+                currentSelectedItem!!.isSelected = false
 
-            mutableItems.find { it.uuid == newItem.uuid }
-                .takeIf { it == null }
-                .also {
-                    currentSelectedItem!!.isSelected = false
-
-                    currentSelectedItem = newItem.apply {
-                        isSelected = true
-                    }
-
-                    mutableItems.add(newItem)
-
-                    viewController.onUpdate(mutableItems, addNewElement = true)
-
-                    currentState = ProcessAdd()
+                currentSelectedItem = newItem.apply {
+                    isSelected = true
                 }
+
+                mutableItems[newItem.identifier] = newItem
+
+                viewController.onUpdate(mutableItems.values, addNewElement = true)
+
+                currentState = ProcessAdd()
+            }
         }
 
         override fun confirmRemove() {
-            val isSuccess = mutableItems.remove(currentSelectedItem!!.apply { isSelected = false })
+            val previousValue = mutableItems.remove(currentSelectedItem!!.run {
+                isSelected = false
+                this.identifier
+            })
 
-            if (isSuccess) {
-                viewController.onUpdate(mutableItems, addNewElement = false)
+            if (previousValue != null) {
+                viewController.onUpdate(mutableItems.values, addNewElement = false)
             }
 
             currentState = Unselected()
@@ -329,26 +337,26 @@ class SingleSelectionController<T : SelectableItem>(
 
     private inner class NotCurrentSelectedRemove(
         private val preparedItemToRemove: T
-    ) : State<T> {
+    ) : State<I, T> {
 
-        override fun select(uuid: UUID) {
-            mutableItems.find { it.uuid == uuid }?.also { viewState ->
-                val unselectUUID = currentSelectedItem?.run {
+        override fun select(identifier: I) {
+            mutableItems[identifier]?.also { viewState ->
+                val unselectIdentifier = currentSelectedItem?.run {
                     isSelected = false
-                    this.uuid
+                    this.identifier
                 }
 
-                val selectedUUID = viewState.run {
+                val selectedIdentifier = viewState.run {
                     isSelected = true
-                    this.uuid
+                    this.identifier
                 }
 
                 currentSelectedItem = viewState
 
-                if (unselectUUID != null) {
-                    viewController.onPairChange(unselectUUID, selectedUUID)
+                if (unselectIdentifier != null) {
+                    viewController.onPairChange(unselectIdentifier, selectedIdentifier)
                 } else {
-                    viewController.onSingleChange(selectedUUID)
+                    viewController.onSingleChange(selectedIdentifier)
                 }
 
                 currentState = Selected()
@@ -356,46 +364,44 @@ class SingleSelectionController<T : SelectableItem>(
         }
 
         override fun resetSelected() {
-            val unselectUUID = currentSelectedItem?.run {
+            val unselectIdentifier = currentSelectedItem?.run {
                 isSelected = false
-                this.uuid
+                this.identifier
             }
 
             currentSelectedItem = null
 
-            if (unselectUUID != null) viewController.onSingleChange(unselectUUID)
+            if (unselectIdentifier != null) viewController.onSingleChange(unselectIdentifier)
 
             currentState = Unselected()
         }
 
         override fun add(newItem: T) {
-            mutableItems.find { it.uuid == newItem.uuid }
-                .takeIf { it == null }
-                .also {
-                    currentSelectedItem?.isSelected = false
+            if (!mutableItems.containsKey(newItem.identifier)) {
+                currentSelectedItem?.isSelected = false
 
-                    currentSelectedItem = newItem.apply {
-                        isSelected = true
-                    }
-
-                    mutableItems.add(newItem)
-
-                    viewController.onUpdate(mutableItems, addNewElement = true)
-
-                    currentState = ProcessAdd()
+                currentSelectedItem = newItem.apply {
+                    isSelected = true
                 }
+
+                mutableItems[newItem.identifier] = newItem
+
+                viewController.onUpdate(mutableItems.values, addNewElement = true)
+
+                currentState = ProcessAdd()
+            }
         }
 
         override fun confirmRemove() {
-            val isSuccess = mutableItems.remove(preparedItemToRemove)
+            val previousValue = mutableItems.remove(preparedItemToRemove.run { this.identifier })
 
-            if (isSuccess) {
-                viewController.onUpdate(mutableItems, addNewElement = false)
+            if (previousValue != null) {
+                viewController.onUpdate(mutableItems.values, addNewElement = false)
             }
         }
 
         override fun unselectedRemove(removeItem: T) {
-            mutableItems.find { it.uuid == removeItem.uuid }?.also { viewState ->
+            mutableItems[removeItem.identifier]?.also { viewState ->
                 viewController.onRemove(viewState)
 
                 currentState = NotCurrentSelectedRemove(viewState)
@@ -417,5 +423,5 @@ class SingleSelectionController<T : SelectableItem>(
         }
     }
 
-    private inner class Release : State<T>
+    private inner class Release : State<I, T>
 }

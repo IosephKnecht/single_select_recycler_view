@@ -10,9 +10,9 @@ data class SelectableViewState(
     var isValid: Boolean = true,
     var isLoading: Boolean = false,
     override var isSelected: Boolean = false
-) : SelectableItem {
+) : SelectableItem<UUID> {
 
-    override val uuid: UUID
+    override val identifier: UUID
         get() = someModel.uuid
 
     var changedLabel: SomeCategory = someModel.label

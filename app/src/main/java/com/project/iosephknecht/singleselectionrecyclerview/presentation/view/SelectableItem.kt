@@ -1,8 +1,8 @@
 package com.project.iosephknecht.singleselectionrecyclerview.presentation.view
 
-import java.util.*
+import java.io.Serializable
 
-interface SelectableItem {
-    val uuid: UUID
+interface SelectableItem<T : Serializable> {
+    val identifier: T
     var isSelected: Boolean
 }

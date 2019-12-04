@@ -93,9 +93,11 @@ class SelectableAdapter(
         val positions = mutableListOf<Int>()
 
         items.forEachIndexed { index, viewState ->
-            if (diff.contains(viewState.uuid)) {
+            if (diff.contains(viewState.identifier)) {
                 positions.add(index)
             }
+
+            if (diff.size == positions.size) return@forEachIndexed
         }
 
         positions.forEach {

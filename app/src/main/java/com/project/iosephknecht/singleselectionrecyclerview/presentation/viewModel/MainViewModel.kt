@@ -19,7 +19,7 @@ class MainViewModel(
     private val validateService: ValidateService
 ) : ViewModel(),
     MainContract.ViewModel,
-    SingleSelectionController.ViewController<SelectableViewState> {
+    SingleSelectionController.ViewController<UUID, SelectableViewState> {
 
     private val generatedList by lazy {
         generateList().map {
@@ -52,7 +52,7 @@ class MainViewModel(
             ?.takeIf { it.hasChanges() }
             ?.reset()
 
-        stateController.selectItem(viewState.uuid)
+        stateController.selectItem(viewState.identifier)
     }
 
     override fun add() {
@@ -91,19 +91,19 @@ class MainViewModel(
         validate(viewState)
     }
 
-    override fun onUpdate(list: List<SelectableViewState>, addNewElement: Boolean) {
+    override fun onUpdate(list: Collection<SelectableViewState>, addNewElement: Boolean) {
         this.items.value = ArrayList(list)
         this.addState.value = addNewElement
     }
 
-    override fun onSingleChange(uuid: UUID) {
-        diff.value = arrayOf(uuid)
+    override fun onSingleChange(identifier: UUID) {
+        diff.value = arrayOf(identifier)
     }
 
-    override fun onPairChange(unselectUUID: UUID, selectUUID: UUID) {
+    override fun onPairChange(unselectIdentifier: UUID, selectIdentifier: UUID) {
         diff.value = arrayOf(
-            unselectUUID,
-            selectUUID
+            unselectIdentifier,
+            selectIdentifier
         )
     }
 
@@ -141,7 +141,7 @@ class MainViewModel(
                         // FIXME: bottleneck
                         viewState.isValid = false
                         viewState.isLoading = false
-                        onSingleChange(viewState.uuid)
+                        onSingleChange(viewState.identifier)
                     }
                 }, { e ->
                     e.printStackTrace()
@@ -158,7 +158,7 @@ class MainViewModel(
 
     private fun markAsLoading(viewState: SelectableViewState) {
         viewState.isLoading = true
-        onSingleChange(viewState.uuid)
+        onSingleChange(viewState.identifier)
     }
 
     private fun SelectableViewState.buildChangedModel(): SomeModel {
@@ -166,7 +166,7 @@ class MainViewModel(
         val value = changedValue
 
         return SomeModel(
-            uuid = uuid,
+            uuid = identifier,
             label = label,
             value = value.toString()
         )
