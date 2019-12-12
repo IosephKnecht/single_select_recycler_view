@@ -8,7 +8,7 @@ interface MainContract {
     interface ViewModel {
         val items: LiveData<List<SelectableViewState>>
         val addState: LiveData<Boolean>
-        val diff: LiveData<Array<UUID>>
+        val diff: LiveData<Collection<UUID>>
         val confirmRemoveDialog: LiveData<SelectableViewState>
 
         fun select(viewState: SelectableViewState)

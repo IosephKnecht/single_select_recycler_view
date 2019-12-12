@@ -89,7 +89,7 @@ class SelectableAdapter(
         notifyDataSetChanged()
     }
 
-    fun applyDiff(diff: Array<UUID>) {
+    fun applyDiff(diff: Collection<UUID>) {
         val positions = mutableListOf<Int>()
 
         items.forEachIndexed { index, viewState ->
