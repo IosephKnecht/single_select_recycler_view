@@ -21,6 +21,11 @@ class MainViewModel(
     MainContract.ViewModel,
     SingleSelectionController.ViewController<UUID, SelectableViewState> {
 
+    override val items = MutableLiveData<List<SelectableViewState>>()
+    override val addState = MutableLiveData(false)
+    override val diff = MutableLiveData<Collection<UUID>>()
+    override val confirmRemoveDialog = MutableLiveData<SelectableViewState>()
+
     private val generatedList by lazy {
         generateList().map {
             SelectableViewState(
@@ -36,21 +41,12 @@ class MainViewModel(
 
     private var validateDisposable: Disposable? = null
 
-    override val items = MutableLiveData(generatedList)
-    override val addState = MutableLiveData(false)
-    override val diff = MutableLiveData<Array<UUID>>()
-    override val confirmRemoveDialog = MutableLiveData<SelectableViewState>()
-
     override fun onCleared() {
         stateController.release()
     }
 
     override fun select(viewState: SelectableViewState) {
         validateDisposable?.dispose()
-
-        stateController.currentSelectedItem
-            ?.takeIf { it.hasChanges() }
-            ?.reset()
 
         stateController.selectItem(viewState.identifier)
     }
@@ -85,30 +81,31 @@ class MainViewModel(
 
     override fun declineRemove() {
         confirmRemoveDialog.value = null
+        stateController.declineRemove()
     }
 
     override fun applyChanges(viewState: SelectableViewState) {
         validate(viewState)
     }
 
-    override fun onUpdate(list: Collection<SelectableViewState>, addNewElement: Boolean) {
+    override fun onFullUpdate(list: Collection<SelectableViewState>) {
         this.items.value = ArrayList(list)
-        this.addState.value = addNewElement
     }
 
-    override fun onSingleChange(identifier: UUID) {
-        diff.value = arrayOf(identifier)
-    }
-
-    override fun onPairChange(unselectIdentifier: UUID, selectIdentifier: UUID) {
-        diff.value = arrayOf(
-            unselectIdentifier,
-            selectIdentifier
-        )
+    override fun onSoftUpdate(list: Collection<UUID>) {
+        diff.value = list
     }
 
     override fun onRemove(viewState: SelectableViewState) {
         confirmRemoveDialog.value = viewState
+    }
+
+    override fun onAddNewElement(willBeAdded: Boolean) {
+        this.addState.value = willBeAdded
+    }
+
+    override fun onReset(viewState: SelectableViewState) {
+        viewState.takeIf { it.hasChanges() }?.reset()
     }
 
     private fun validate(viewState: SelectableViewState) {
@@ -141,7 +138,7 @@ class MainViewModel(
                         // FIXME: bottleneck
                         viewState.isValid = false
                         viewState.isLoading = false
-                        onSingleChange(viewState.identifier)
+                        onSoftUpdate(listOf(viewState.identifier))
                     }
                 }, { e ->
                     e.printStackTrace()
@@ -158,7 +155,7 @@ class MainViewModel(
 
     private fun markAsLoading(viewState: SelectableViewState) {
         viewState.isLoading = true
-        onSingleChange(viewState.identifier)
+        onSoftUpdate(listOf(viewState.identifier))
     }
 
     private fun SelectableViewState.buildChangedModel(): SomeModel {
