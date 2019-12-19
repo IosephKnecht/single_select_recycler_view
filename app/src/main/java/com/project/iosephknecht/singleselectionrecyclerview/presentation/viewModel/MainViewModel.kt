@@ -48,10 +48,6 @@ class MainViewModel(
     override fun select(viewState: SelectableViewState) {
         validateDisposable?.dispose()
 
-        stateController.currentSelectedItem
-            ?.takeIf { it.hasChanges() }
-            ?.reset()
-
         stateController.selectItem(viewState.identifier)
     }
 
@@ -92,9 +88,8 @@ class MainViewModel(
         validate(viewState)
     }
 
-    override fun onFullUpdate(list: Collection<SelectableViewState>, addNewElement: Boolean) {
+    override fun onFullUpdate(list: Collection<SelectableViewState>) {
         this.items.value = ArrayList(list)
-        this.addState.value = addNewElement
     }
 
     override fun onSoftUpdate(list: Collection<UUID>) {
@@ -103,6 +98,14 @@ class MainViewModel(
 
     override fun onRemove(viewState: SelectableViewState) {
         confirmRemoveDialog.value = viewState
+    }
+
+    override fun onAddNewElement(willBeAdded: Boolean) {
+        this.addState.value = willBeAdded
+    }
+
+    override fun onReset(viewState: SelectableViewState) {
+        viewState.takeIf { it.hasChanges() }?.reset()
     }
 
     private fun validate(viewState: SelectableViewState) {

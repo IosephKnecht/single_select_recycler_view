@@ -11,11 +11,10 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
 
     private var currentState: State<I, T> = Unselected()
 
-    var currentSelectedItem: T? = null
-        private set
+    private var currentSelectedItem: T? = null
 
     init {
-        viewController.onFullUpdate(mutableItems.values, false)
+        viewController.onFullUpdate(mutableItems.values)
     }
 
     fun isProcessAddState(): Boolean {
@@ -23,11 +22,7 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
     }
 
     fun selectItem(identifier: I) {
-        if (isProcessAddState()) {
-            currentState.declineAdd()
-        } else {
-            currentState.select(identifier)
-        }
+        currentState.select(identifier)
     }
 
     fun addItem(newItem: T) {
@@ -68,8 +63,10 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
 
     interface ViewController<I : Serializable, T : SelectableItem<I>> {
         fun onSoftUpdate(list: Collection<I>)
-        fun onFullUpdate(list: Collection<T>, addNewElement: Boolean)
-        fun onRemove(viewState: T)
+        fun onFullUpdate(list: Collection<T>)
+        fun onAddNewElement(willBeAdded: Boolean) {}
+        fun onReset(viewState: T) {}
+        fun onRemove(viewState: T) {}
     }
 
     private interface State<I : Serializable, T : SelectableItem<I>> {
@@ -100,13 +97,15 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
 
         override fun add(newItem: T) {
             if (!mutableItems.containsKey(newItem.identifier)) {
+
                 currentSelectedItem = newItem.apply {
                     isSelected = true
                 }
 
                 mutableItems[newItem.identifier] = newItem
 
-                viewController.onFullUpdate(mutableItems.values, addNewElement = true)
+                viewController.onAddNewElement(true)
+                viewController.onFullUpdate(mutableItems.values)
 
                 currentState = ProcessAdd()
             }
@@ -149,6 +148,7 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
 
         override fun add(newItem: T) {
             if (!mutableItems.containsKey(newItem.identifier)) {
+
                 currentSelectedItem!!.isSelected = false
 
                 currentSelectedItem = newItem.apply {
@@ -157,7 +157,8 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
 
                 mutableItems[newItem.identifier] = newItem
 
-                viewController.onFullUpdate(mutableItems.values, addNewElement = true)
+                viewController.onAddNewElement(true)
+                viewController.onFullUpdate(mutableItems.values)
 
                 currentState = ProcessAdd()
             }
@@ -182,6 +183,8 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
                 this.identifier
             }
 
+            viewController.onReset(currentSelectedItem!!)
+
             currentSelectedItem = null
 
             viewController.onSoftUpdate(listOf(unselectIdentifier))
@@ -197,6 +200,33 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
     }
 
     private inner class ProcessAdd : State<I, T> {
+
+        override fun select(identifier: I) {
+            if (currentSelectedItem!!.identifier == identifier) return
+
+            mutableItems[identifier]?.also { viewState ->
+                val previousItem = mutableItems.remove(currentSelectedItem!!.run {
+                    isSelected = false
+                    this.identifier
+                })
+
+                val selectedIdentifier = viewState.run {
+                    isSelected = true
+                    this.identifier
+                }
+
+                currentSelectedItem = viewState
+
+                if (previousItem != null) {
+                    viewController.onAddNewElement(false)
+                    viewController.onFullUpdate(mutableItems.values)
+                } else {
+                    viewController.onSoftUpdate(listOf(selectedIdentifier))
+                }
+
+                currentState = Selected()
+            }
+        }
 
         override fun removeNotCurrent(identifier: I) {
             mutableItems[identifier]?.also { viewState ->
@@ -216,7 +246,8 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
             currentSelectedItem = null
 
             if (previousValue != null) {
-                viewController.onFullUpdate(mutableItems.values, addNewElement = false)
+                viewController.onAddNewElement(false)
+                viewController.onFullUpdate(mutableItems.values)
             }
 
             currentState = Unselected()
@@ -230,8 +261,8 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
 
             currentSelectedItem = null
 
-            // FIXME: not necessary full update, need change onSingleUpdate()
-            viewController.onFullUpdate(mutableItems.values, addNewElement = false)
+            viewController.onAddNewElement(false)
+            viewController.onSoftUpdate(listOf(unselectIdentifier))
 
             currentState = Unselected()
         }
@@ -244,7 +275,8 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
             currentSelectedItem = null
 
             if (previousValue != null) {
-                viewController.onFullUpdate(mutableItems.values, addNewElement = false)
+                viewController.onAddNewElement(false)
+                viewController.onFullUpdate(mutableItems.values)
             }
 
             currentState = Unselected()
@@ -265,7 +297,8 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
             val previousValue = mutableItems.remove(preparedItemToRemove.run { this.identifier })
 
             if (previousValue != null) {
-                viewController.onFullUpdate(mutableItems.values, addNewElement = false)
+                viewController.onAddNewElement(false)
+                viewController.onFullUpdate(mutableItems.values)
             }
 
             currentState = Unselected()
@@ -290,7 +323,8 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
             val previousValue = mutableItems.remove(preparedItemToRemove.run { this.identifier })
 
             if (previousValue != null) {
-                viewController.onFullUpdate(mutableItems.values, addNewElement = false)
+                viewController.onAddNewElement(false)
+                viewController.onFullUpdate(mutableItems.values)
             }
 
             currentState = Selected()
@@ -314,7 +348,8 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
             currentSelectedItem = null
 
             if (previousValue != null) {
-                viewController.onFullUpdate(mutableItems.values, addNewElement = false)
+                viewController.onAddNewElement(false)
+                viewController.onFullUpdate(mutableItems.values)
             }
 
             currentState = Unselected()
@@ -339,7 +374,8 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
             val previousValue = mutableItems.remove(preparedItemToRemove.run { this.identifier })
 
             if (previousValue != null) {
-                viewController.onFullUpdate(mutableItems.values, addNewElement = false)
+                viewController.onAddNewElement(false)
+                viewController.onFullUpdate(mutableItems.values)
             }
 
             currentState = ProcessAdd()
