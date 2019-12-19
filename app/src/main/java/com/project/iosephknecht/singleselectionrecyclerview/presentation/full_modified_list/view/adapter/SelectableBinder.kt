@@ -1,4 +1,4 @@
-package com.project.iosephknecht.singleselectionrecyclerview.presentation.view.adapter
+package com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.view.adapter
 
 import android.content.Context
 import android.view.View
@@ -6,8 +6,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.CustomEditTextView
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.SelectableViewState
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel.SelectableViewState
 
 class SelectableBinder(
     @ColorRes private val selectableColor: Int,

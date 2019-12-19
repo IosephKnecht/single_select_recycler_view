@@ -1,4 +1,4 @@
-package com.project.iosephknecht.singleselectionrecyclerview.presentation.view.adapter
+package com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.view.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,8 +7,10 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.project.iosephknecht.singleselectionrecyclerview.R
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeCategory
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.CustomEditTextView
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.SelectableViewState
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.listeners.SelectableSpinnerOnClickItemListener
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.listeners.SelectableViewStateTextWatcher
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.view.CustomEditTextView
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel.SelectableViewState
 import java.util.*
 
 class SelectableAdapter(

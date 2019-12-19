@@ -1,12 +1,12 @@
-package com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel
+package com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeCategory
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeModel
 import com.project.iosephknecht.singleselectionrecyclerview.domain.ValidateService
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.contract.MainContract
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.view.SingleSelectionController
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.contract.MainContract
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.base_selectable.controller.SingleSelectionController
 import io.reactivex.Single
 import java.util.*
 import kotlin.collections.ArrayList
@@ -34,10 +34,11 @@ class MainViewModel(
         }
     }
 
-    private val stateController = SingleSelectionController(
-        items = generatedList,
-        viewController = this
-    )
+    private val stateController =
+        SingleSelectionController(
+            items = generatedList,
+            viewController = this
+        )
 
     private var validateDisposable: Disposable? = null
 

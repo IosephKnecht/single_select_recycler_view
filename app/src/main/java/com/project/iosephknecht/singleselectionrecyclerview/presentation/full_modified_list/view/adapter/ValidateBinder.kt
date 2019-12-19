@@ -1,4 +1,4 @@
-package com.project.iosephknecht.singleselectionrecyclerview.presentation.view.adapter
+package com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.view.adapter
 
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat

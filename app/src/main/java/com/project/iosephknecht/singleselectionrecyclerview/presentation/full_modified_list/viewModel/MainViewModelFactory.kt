@@ -1,4 +1,4 @@
-package com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel
+package com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

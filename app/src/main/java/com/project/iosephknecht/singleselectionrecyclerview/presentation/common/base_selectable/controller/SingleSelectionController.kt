@@ -1,4 +1,4 @@
-package com.project.iosephknecht.singleselectionrecyclerview.presentation.view
+package com.project.iosephknecht.singleselectionrecyclerview.presentation.common.base_selectable.controller
 
 import java.io.Serializable
 
@@ -18,7 +18,7 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
     }
 
     fun isProcessAddState(): Boolean {
-        return currentState is SingleSelectionController<*, *>.ProcessAdd
+        return currentState is ProcessAdd
     }
 
     fun selectItem(identifier: I) {
@@ -82,7 +82,8 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
         fun release() {}
     }
 
-    private inner class Unselected : State<I, T> {
+    private inner class Unselected :
+        State<I, T> {
         override fun select(identifier: I) {
             mutableItems[identifier]?.also { viewState ->
                 currentSelectedItem = viewState.apply {
@@ -125,7 +126,8 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
         }
     }
 
-    private inner class Selected : State<I, T> {
+    private inner class Selected :
+        State<I, T> {
         override fun select(identifier: I) {
             if (currentSelectedItem!!.identifier == identifier) return
 
@@ -199,7 +201,8 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
         }
     }
 
-    private inner class ProcessAdd : State<I, T> {
+    private inner class ProcessAdd :
+        State<I, T> {
 
         override fun select(identifier: I) {
             if (currentSelectedItem!!.identifier == identifier) return
@@ -341,7 +344,8 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
         }
     }
 
-    private inner class ProcessSelectedRemove : State<I, T> {
+    private inner class ProcessSelectedRemove :
+        State<I, T> {
 
         override fun confirmRemove() {
             val previousValue = mutableItems.remove(currentSelectedItem!!.run { this.identifier })
@@ -392,5 +396,6 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
         }
     }
 
-    private inner class Release : State<I, T>
+    private inner class Release :
+        State<I, T>
 }

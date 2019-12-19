@@ -1,8 +1,8 @@
-package com.project.iosephknecht.singleselectionrecyclerview.presentation.view.adapter
+package com.project.iosephknecht.singleselectionrecyclerview.presentation.common.listeners
 
 import android.view.View
 import android.widget.AdapterView
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.SelectableViewState
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel.SelectableViewState
 
 class SelectableSpinnerOnClickItemListener(
     private val block: SelectableViewState.(ordinal: Int) -> Unit

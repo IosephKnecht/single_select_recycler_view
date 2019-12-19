@@ -1,4 +1,4 @@
-package com.project.iosephknecht.singleselectionrecyclerview.presentation.view
+package com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.view
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -10,8 +10,6 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
-import androidx.annotation.ColorInt
-import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.project.iosephknecht.singleselectionrecyclerview.R
 

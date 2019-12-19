@@ -1,7 +1,7 @@
-package com.project.iosephknecht.singleselectionrecyclerview.presentation.contract
+package com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.contract
 
 import androidx.lifecycle.LiveData
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.viewModel.SelectableViewState
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel.SelectableViewState
 import java.util.*
 
 interface MainContract {
