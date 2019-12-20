@@ -1,5 +1,6 @@
 package com.project.iosephknecht.singleselectionrecyclerview.presentation
 
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,10 @@ internal fun inflate(
 
 internal inline fun <reified T> Fragment.requestApplicationAs(): T {
     return requireContext().applicationContext as T
+}
+
+internal inline fun <reified T> Activity.requestApplicationAs(): T {
+    return application.applicationContext as T
 }
 
 internal fun RecyclerView.disableItemChangeAnimation() {
