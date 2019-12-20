@@ -1,15 +1,16 @@
 package com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates
 
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.ui.CustomEditTextView
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel.SelectableViewState
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 
-class SelectableErrorBinder(
+class SelectableErrorDelegate(
     @DrawableRes
     private val defaultBackground: Int,
     @DrawableRes
     private val errorBackground: Int
-) : AbstractAdapterDelegate<SelectableErrorBinder.ViewProvider, SelectableViewState> {
+) : AbstractAdapterDelegate<SelectableErrorDelegate.ViewProvider, SelectableViewState> {
 
     interface ViewProvider : AbstractAdapterDelegate.BaseViewProvider {
         val customEditText: CustomEditTextView
@@ -19,7 +20,12 @@ class SelectableErrorBinder(
         with(viewProvider) {
             val backgroundRes = if (element.isValid) defaultBackground else errorBackground
 
-            customEditText.setBackgroundResource(backgroundRes)
+            customEditText.setValueBackground(
+                ContextCompat.getDrawable(
+                    viewProvider.rootView.context,
+                    backgroundRes
+                )!!
+            )
         }
     }
 }

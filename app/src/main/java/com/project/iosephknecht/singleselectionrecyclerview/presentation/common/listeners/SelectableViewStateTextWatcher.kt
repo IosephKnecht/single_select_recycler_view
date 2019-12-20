@@ -2,7 +2,7 @@ package com.project.iosephknecht.singleselectionrecyclerview.presentation.common
 
 import android.text.Editable
 import android.text.TextWatcher
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel.SelectableViewState
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 
 class SelectableViewStateTextWatcher(
     private val block: SelectableViewState.(value: CharSequence?) -> Unit

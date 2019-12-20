@@ -1,17 +1,15 @@
 package com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.contract
 
 import androidx.lifecycle.LiveData
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel.SelectableViewState
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.base_selectable.contract.BaseSelectableContract
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 import java.util.*
 
-interface MainContract {
-    interface ViewModel {
-        val items: LiveData<List<SelectableViewState>>
+interface FullModifiedContract {
+    interface ViewModel : BaseSelectableContract.ViewModel<UUID, SelectableViewState> {
         val addState: LiveData<Boolean>
-        val diff: LiveData<Collection<UUID>>
         val confirmRemoveDialog: LiveData<SelectableViewState>
 
-        fun select(viewState: SelectableViewState)
         fun add()
         fun confirmAdd()
         fun remove(selectableViewState: SelectableViewState)

@@ -2,7 +2,7 @@ package com.project.iosephknecht.singleselectionrecyclerview.presentation.common
 
 import android.view.View
 import android.widget.AdapterView
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel.SelectableViewState
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 
 class SelectableSpinnerOnClickItemListener(
     private val block: SelectableViewState.(ordinal: Int) -> Unit

@@ -1,7 +1,7 @@
 package com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates
 
 import android.widget.Spinner
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel.SelectableViewState
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 
 class SelectableCategoryDelegate(
     private val canBeModified: Boolean
@@ -24,7 +24,7 @@ class SelectableCategoryDelegate(
                     element.changedLabel.ordinal
                 )
 
-                isEnabled = canBeModified
+                isEnabled = canBeModified && element.isSelected
             }
 
             bindSpinnerClickListener(element)

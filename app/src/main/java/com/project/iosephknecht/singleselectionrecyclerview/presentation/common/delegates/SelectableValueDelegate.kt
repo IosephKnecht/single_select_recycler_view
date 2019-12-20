@@ -1,7 +1,7 @@
 package com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates
 
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.ui.CustomEditTextView
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel.SelectableViewState
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 
 class SelectableValueDelegate(
     private val canBeModified: Boolean

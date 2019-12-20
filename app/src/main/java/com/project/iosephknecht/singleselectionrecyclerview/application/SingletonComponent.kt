@@ -6,6 +6,7 @@ import com.project.iosephknecht.singleselectionrecyclerview.domain.SomeModelData
 import com.project.iosephknecht.singleselectionrecyclerview.domain.SomeModelDataSourceImpl
 import com.project.iosephknecht.singleselectionrecyclerview.domain.ValidateService
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.cases.di.CasesComponent
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.di.FullModifiedComponent
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.main.di.MainComponent
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.only_selection.di.OnlySelectionComponent
 import dagger.BindsInstance
@@ -26,9 +27,10 @@ interface SingletonComponent {
         fun build(): SingletonComponent
     }
 
-    fun mainSubcomponentBuilder(): MainComponent.Builder
+    fun mainSubComponentBuilder(): MainComponent.Builder
     fun singleSelectionCasesSubComponentBuilder(): CasesComponent.Builder
     fun onlySelectionSubComponentBuilder(): OnlySelectionComponent.Builder
+    fun fullModifiedSubComponentBuilder(): FullModifiedComponent.Builder
 }
 
 @Module

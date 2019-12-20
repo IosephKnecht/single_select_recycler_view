@@ -7,6 +7,7 @@ import com.project.iosephknecht.singleselectionrecyclerview.R
 import com.project.iosephknecht.singleselectionrecyclerview.application.SingletonComponentHolder
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.cases.CasesInputModuleContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.cases.view.CasesFragment
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.FullModifiedInputModuleContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.only_selection.OnlySelectionInputModule
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.requestApplicationAs
 import javax.inject.Inject
@@ -23,13 +24,16 @@ class MainActivity : AppCompatActivity(), CasesFragment.Host {
     @set:Inject
     protected var onlySelectionInputModule: OnlySelectionInputModule? = null
 
+    @set:Inject
+    protected var fullModifiedInputModule: FullModifiedInputModuleContract? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         requestApplicationAs<SingletonComponentHolder>()
             .getSingletonComponentHolder()
-            .mainSubcomponentBuilder()
+            .mainSubComponentBuilder()
             .build()
             .inject(this)
 
@@ -60,6 +64,7 @@ class MainActivity : AppCompatActivity(), CasesFragment.Host {
     }
 
     override fun showCase3Fragment() {
+        replaceFragment(fullModifiedInputModule!!.createFragment())
     }
 
     private fun replaceFragment(fragment: Fragment) {

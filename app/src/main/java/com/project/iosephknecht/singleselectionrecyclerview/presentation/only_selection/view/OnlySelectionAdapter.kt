@@ -12,7 +12,7 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableClickManagerDelegate
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableValueDelegate
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.ui.CustomEditTextView
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel.SelectableViewState
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.inflate
 import java.util.*
 
@@ -45,15 +45,15 @@ internal class OnlySelectionAdapter(
         notifyDataSetChanged()
     }
 
-    fun applyDiff(diff: Collection<UUID>) {
+    fun applyChanges(changes: Collection<UUID>) {
         val positions = mutableListOf<Int>()
 
         items.forEachIndexed { index, viewState ->
-            if (diff.contains(viewState.identifier)) {
+            if (changes.contains(viewState.identifier)) {
                 positions.add(index)
             }
 
-            if (diff.size == positions.size) return@forEachIndexed
+            if (changes.size == positions.size) return@forEachIndexed
         }
 
         positions.forEach {

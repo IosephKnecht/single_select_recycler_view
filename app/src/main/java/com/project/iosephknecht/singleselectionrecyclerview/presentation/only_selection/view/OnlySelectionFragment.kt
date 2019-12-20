@@ -93,7 +93,7 @@ class OnlySelectionFragment : Fragment() {
             })
 
             changedItems.observe(viewLifecycleOwner, Observer { changedItems ->
-                changedItems?.also { adapter!!.applyDiff(it) }
+                changedItems?.also { adapter!!.applyChanges(it) }
             })
         }
     }

@@ -1,4 +1,4 @@
-package com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel
+package com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState
 
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeCategory
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeModel
@@ -24,11 +24,13 @@ data class SelectableViewState(
     }
 
     fun reset(
+        changedLabel: SomeCategory,
+        changedValue: CharSequence,
         isValid: Boolean = true,
         isLoading: Boolean = false
     ) {
-        changedLabel = someModel.label
-        changedValue = someModel.value
+        this.changedLabel = changedLabel
+        this.changedValue = changedValue
         this.isValid = isValid
         this.isLoading = isLoading
     }

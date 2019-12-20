@@ -4,9 +4,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeCategory
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeModel
+import com.project.iosephknecht.singleselectionrecyclerview.domain.SomeModelDataSource
 import com.project.iosephknecht.singleselectionrecyclerview.domain.ValidateService
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.contract.MainContract
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.contract.FullModifiedContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.base_selectable.controller.SingleSelectionController
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.base_selectable.viewModel.BaseSelectableViewModel
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 import io.reactivex.Single
 import java.util.*
 import kotlin.collections.ArrayList
@@ -15,30 +18,22 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
 
-class MainViewModel(
+internal class FullModifiedViewModel(
+    private val someModelDataSource: SomeModelDataSource,
     private val validateService: ValidateService
-) : ViewModel(),
-    MainContract.ViewModel,
+) : BaseSelectableViewModel<UUID, SelectableViewState>(),
+    FullModifiedContract.ViewModel,
     SingleSelectionController.ViewController<UUID, SelectableViewState> {
 
-    override val items = MutableLiveData<List<SelectableViewState>>()
+    override val items = MutableLiveData<Collection<SelectableViewState>>()
     override val addState = MutableLiveData(false)
-    override val diff = MutableLiveData<Collection<UUID>>()
+    override val changedItems = MutableLiveData<Collection<UUID>>()
     override val confirmRemoveDialog = MutableLiveData<SelectableViewState>()
 
-    private val generatedList by lazy {
-        generateList().map {
-            SelectableViewState(
-                it
-            )
-        }
-    }
-
-    private val stateController =
-        SingleSelectionController(
-            items = generatedList,
-            viewController = this
-        )
+    override val stateController = SingleSelectionController(
+        items = mapToViewStates(),
+        viewController = this
+    )
 
     private var validateDisposable: Disposable? = null
 
@@ -94,7 +89,7 @@ class MainViewModel(
     }
 
     override fun onSoftUpdate(list: Collection<UUID>) {
-        diff.value = list
+        changedItems.value = list
     }
 
     override fun onRemove(viewState: SelectableViewState) {
@@ -106,7 +101,10 @@ class MainViewModel(
     }
 
     override fun onReset(viewState: SelectableViewState) {
-        viewState.takeIf { it.hasChanges() }?.reset()
+        viewState.takeIf { it.hasChanges() }?.reset(
+            changedLabel = viewState.someModel.label,
+            changedValue = viewState.someModel.value
+        )
     }
 
     private fun validate(viewState: SelectableViewState) {
@@ -123,8 +121,10 @@ class MainViewModel(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnDispose {
-                    // FIXME: bottleneck
-                    viewState.reset()
+                    viewState.reset(
+                        changedLabel = viewState.someModel.label,
+                        changedValue = viewState.someModel.value
+                    )
                 }
                 .subscribe({ isValid ->
                     if (isValid) {
@@ -136,9 +136,11 @@ class MainViewModel(
                             stateController.resetSelected()
                         }
                     } else {
-                        // FIXME: bottleneck
-                        viewState.isValid = false
-                        viewState.isLoading = false
+                        viewState.reset(
+                            changedLabel = viewState.changedLabel,
+                            changedValue = viewState.changedValue,
+                            isValid = false
+                        )
                         onSoftUpdate(listOf(viewState.identifier))
                     }
                 }, { e ->
@@ -170,20 +172,11 @@ class MainViewModel(
         )
     }
 
-    private fun generateList(): List<SomeModel> {
-        val list = mutableListOf<SomeModel>()
-        val value = "value"
-
-        for (i in 0..100) {
-            list.add(
-                SomeModel(
-                    uuid = UUID.randomUUID(),
-                    label = SomeCategory.CATEGORY1,
-                    value = "${value}_$i"
-                )
-            )
-        }
-
-        return list
+    override fun mapToViewStates(): Collection<SelectableViewState> {
+        return someModelDataSource.generateSomeModelList(100)
+            .map { list ->
+                list.map { SelectableViewState(it) }
+            }
+            .blockingGet()
     }
 }

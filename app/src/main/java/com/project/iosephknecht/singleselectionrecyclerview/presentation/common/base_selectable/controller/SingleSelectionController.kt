@@ -137,6 +137,8 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
                     this.identifier
                 }
 
+                viewController.onReset(currentSelectedItem!!)
+
                 val selectedIdentifier = viewState.run {
                     isSelected = true
                     this.identifier
