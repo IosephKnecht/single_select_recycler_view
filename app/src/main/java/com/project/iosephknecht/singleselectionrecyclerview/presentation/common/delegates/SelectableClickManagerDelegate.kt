@@ -4,10 +4,11 @@ import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.view.CustomEditTextView
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.ui.CustomEditTextView
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel.SelectableViewState
 
 class SelectableClickManagerDelegate(
+    private val canBeModified: Boolean,
     private val selectableAction: (viewState: SelectableViewState) -> Unit,
     private val removeAction: ((viewState: SelectableViewState) -> Unit)?,
     private val applyChangesAction: ((viewState: SelectableViewState) -> Unit)?
@@ -49,7 +50,7 @@ class SelectableClickManagerDelegate(
 
                 service?.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
             }
-        }.takeIf { isSelected }
+        }.takeIf { isSelected && canBeModified }
 
         with(viewProvider) {
             rootView.setOnClickListener(selectedClick)

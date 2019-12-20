@@ -9,7 +9,7 @@ import com.project.iosephknecht.singleselectionrecyclerview.R
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeCategory
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.listeners.SelectableSpinnerOnClickItemListener
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.listeners.SelectableViewStateTextWatcher
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.view.CustomEditTextView
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.ui.CustomEditTextView
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel.SelectableViewState
 import java.util.*
 
@@ -66,7 +66,7 @@ class SelectableAdapter(
             val customEditTextState = when {
                 viewState.isLoading -> CustomEditTextView.State.LOADING
                 viewState.isSelected -> CustomEditTextView.State.EDITABLE
-                else -> CustomEditTextView.State.READABLE
+                else -> CustomEditTextView.State.READABLE_WITH_REMOVE
             }
 
             customEditText?.apply {

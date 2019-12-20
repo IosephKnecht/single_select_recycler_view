@@ -58,6 +58,7 @@ class OnlySelectionFragment : Fragment() {
                 unselectableBackground = android.R.color.white
             ),
             SelectableClickManagerDelegate(
+                canBeModified = false,
                 selectableAction = viewModel!!::select,
                 applyChangesAction = null,
                 removeAction = null

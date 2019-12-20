@@ -1,6 +1,6 @@
 package com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates
 
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.view.CustomEditTextView
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.ui.CustomEditTextView
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel.SelectableViewState
 
 class SelectableValueDelegate(
@@ -19,10 +19,10 @@ class SelectableValueDelegate(
             unbindValueTextWatcher()
 
             val customEditTextState = when {
-                !canBeModified -> CustomEditTextView.State.READABLE
+                !canBeModified -> CustomEditTextView.State.ONLY_READABLE
                 element.isLoading -> CustomEditTextView.State.LOADING
                 element.isSelected -> CustomEditTextView.State.EDITABLE
-                else -> CustomEditTextView.State.READABLE
+                else -> CustomEditTextView.State.READABLE_WITH_REMOVE
             }
 
             customEditText.apply {

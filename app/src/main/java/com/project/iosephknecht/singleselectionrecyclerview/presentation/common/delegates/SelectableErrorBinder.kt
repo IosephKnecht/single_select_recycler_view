@@ -1,7 +1,7 @@
 package com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates
 
 import androidx.annotation.DrawableRes
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.view.CustomEditTextView
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.ui.CustomEditTextView
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel.SelectableViewState
 
 class SelectableErrorBinder(

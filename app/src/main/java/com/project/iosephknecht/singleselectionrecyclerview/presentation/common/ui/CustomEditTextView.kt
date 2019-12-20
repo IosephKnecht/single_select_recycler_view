@@ -1,4 +1,4 @@
-package com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.view
+package com.project.iosephknecht.singleselectionrecyclerview.presentation.common.ui
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -30,7 +30,12 @@ class CustomEditTextView @JvmOverloads constructor(
             applyBtnVisible = View.VISIBLE,
             removeBtnVisible = View.VISIBLE
         ),
-        READABLE(
+        ONLY_READABLE(
+            inputType = InputType.TYPE_NULL,
+            applyBtnVisible = View.GONE,
+            removeBtnVisible = View.GONE
+        ),
+        READABLE_WITH_REMOVE(
             inputType = InputType.TYPE_NULL,
             applyBtnVisible = View.GONE,
             removeBtnVisible = View.VISIBLE
