@@ -1,4 +1,4 @@
-package com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.view
+package com.project.iosephknecht.singleselectionrecyclerview.presentation.partial_modified_list.view
 
 import android.content.Context
 import android.os.Bundle
@@ -6,40 +6,42 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.project.iosephknecht.singleselectionrecyclerview.R
-import com.project.iosephknecht.singleselectionrecyclerview.application.SingletonComponent
 import com.project.iosephknecht.singleselectionrecyclerview.application.SingletonComponentHolder
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.*
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableBackgroundDelegate
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableCategoryDelegate
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableClickManagerDelegate
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableValueDelegate
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.disableItemChangeAnimation
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.contract.FullModifiedContract
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.view.adapter.FullModifiedAdapter
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.partial_modified_list.contract.PartialModifiedContract
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.partial_modified_list.view.adapter.PartialModifiedAdapter
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.requestApplicationAs
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.scrollToLastPosition
-import kotlinx.android.synthetic.main.fragment_full_modified.*
+import kotlinx.android.synthetic.main.fragment_partial_modified.*
 import javax.inject.Inject
 
-class FullModifiedFragment : Fragment() {
+class PartialModifiedFragment : Fragment() {
+
     companion object {
-        fun createInstance() = FullModifiedFragment()
+        fun createInstance() = PartialModifiedFragment()
     }
 
     @set:Inject
-    protected var viewModel: FullModifiedContract.ViewModel? = null
+    protected var viewModel: PartialModifiedContract.ViewModel? = null
 
-    private var adapter: FullModifiedAdapter? = null
+    private var adapter: PartialModifiedAdapter? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
         requestApplicationAs<SingletonComponentHolder>()
             .getSingletonComponentHolder()
-            .fullModifiedSubComponentBuilder()
+            .partialModifiedSubComponentBuilder()
             .with(this)
             .build()
             .inject(this)
@@ -50,33 +52,29 @@ class FullModifiedFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_full_modified, container, false)
+        return inflater.inflate(R.layout.fragment_partial_modified, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = FullModifiedAdapter(
+        adapter = PartialModifiedAdapter(
             selectableBackgroundDelegate = SelectableBackgroundDelegate(
                 unselectableBackground = android.R.color.white,
                 selectableBackground = R.color.accent
             ),
             selectableClickManagerDelegate = SelectableClickManagerDelegate(
                 selectableAction = viewModel!!::select,
-                applyChangesAction = viewModel!!::applyChanges,
-                removeAction = viewModel!!::remove
+                removeAction = viewModel!!::remove,
+                applyChangesAction = null
             ),
             selectableValueDelegate = SelectableValueDelegate(),
-            selectableCategoryDelegate = SelectableCategoryDelegate(),
-            selectableErrorDelegate = SelectableErrorDelegate(
-                defaultBackground = R.drawable.bg_edittext_border,
-                errorBackground = R.drawable.bg_edittext_error
-            )
+            selectableCategoryDelegate = SelectableCategoryDelegate()
         )
 
         recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = this@FullModifiedFragment.adapter
+            adapter = this@PartialModifiedFragment.adapter
             setHasFixedSize(false)
             addItemDecoration(
                 DividerItemDecoration(
@@ -84,6 +82,13 @@ class FullModifiedFragment : Fragment() {
                 )
             )
             disableItemChangeAnimation()
+        }
+
+        floating_action_button.apply {
+            setOnClickListener {
+                viewModel!!.add()
+                recycler_view.scrollToLastPosition()
+            }
         }
     }
 
@@ -95,9 +100,6 @@ class FullModifiedFragment : Fragment() {
                 items?.also {
                     adapter!!.reload(it)
                 }
-            })
-            addState.observe(viewLifecycleOwner, Observer { isAdded ->
-                isAdded?.also { handleIsAddedChange(it) }
             })
             changedItems.observe(viewLifecycleOwner, Observer { diff ->
                 diff?.also { adapter!!.applyChanges(it) }
@@ -118,32 +120,6 @@ class FullModifiedFragment : Fragment() {
     override fun onDetach() {
         viewModel = null
         super.onDetach()
-    }
-
-    private fun handleIsAddedChange(isAdded: Boolean) {
-        if (isAdded) {
-            recycler_view.scrollToLastPosition()
-
-            floating_action_button.apply {
-                setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.ic_done_black_24dp
-                    )
-                )
-                setOnClickListener { viewModel!!.confirmAdd() }
-            }
-        } else {
-            floating_action_button!!.apply {
-                setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.ic_plus_one_black_24dp
-                    )
-                )
-                setOnClickListener { viewModel!!.add() }
-            }
-        }
     }
 
     private fun showRemoveConfirmDialog(viewState: SelectableViewState) {

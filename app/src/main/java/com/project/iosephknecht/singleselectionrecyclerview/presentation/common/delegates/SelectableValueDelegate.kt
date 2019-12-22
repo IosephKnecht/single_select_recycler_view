@@ -3,9 +3,8 @@ package com.project.iosephknecht.singleselectionrecyclerview.presentation.common
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.ui.CustomEditTextView
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 
-class SelectableValueDelegate(
-    private val canBeModified: Boolean
-) : AbstractAdapterDelegate<SelectableValueDelegate.ViewProvider, SelectableViewState> {
+class SelectableValueDelegate :
+    AbstractAdapterDelegate<SelectableValueDelegate.ViewProvider, SelectableViewState> {
 
     interface ViewProvider : AbstractAdapterDelegate.BaseViewProvider {
         val customEditText: CustomEditTextView
@@ -18,16 +17,16 @@ class SelectableValueDelegate(
         with(viewProvider) {
             unbindValueTextWatcher()
 
-            val customEditTextState = when {
-                !canBeModified -> CustomEditTextView.State.ONLY_READABLE
+            val state = when {
                 element.isLoading -> CustomEditTextView.State.LOADING
-                element.isSelected -> CustomEditTextView.State.EDITABLE
-                else -> CustomEditTextView.State.READABLE_WITH_REMOVE
+                !element.isEditableValue && element.isCouldRemoved -> CustomEditTextView.State.READABLE_WITH_REMOVE
+                element.isEditableValue && element.isSelected -> CustomEditTextView.State.EDITABLE
+                else -> CustomEditTextView.State.ONLY_READABLE
             }
 
             customEditText.apply {
                 setText(element.changedValue)
-                setState(customEditTextState)
+                setState(state)
             }
 
             bindValueTextWatcher(element)

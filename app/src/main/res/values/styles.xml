@@ -13,4 +13,11 @@
         <item name="android:spinnerMode">dropdown</item>
     </style>
 
+    <style name="CustomFloatingActionButtonStyle" parent="@style/Widget.MaterialComponents.FloatingActionButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="useCompatPadding">true</item>
+        <item name="android:tint">@color/primary_light</item>
+    </style>
+
 </resources>

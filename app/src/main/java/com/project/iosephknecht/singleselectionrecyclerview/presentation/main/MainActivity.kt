@@ -9,6 +9,7 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.cases.C
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.cases.view.CasesFragment
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.FullModifiedInputModuleContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.only_selection.OnlySelectionInputModule
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.partial_modified_list.PartialModifiedInputModuleContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.requestApplicationAs
 import javax.inject.Inject
 
@@ -26,6 +27,9 @@ class MainActivity : AppCompatActivity(), CasesFragment.Host {
 
     @set:Inject
     protected var fullModifiedInputModule: FullModifiedInputModuleContract? = null
+
+    @set:Inject
+    protected var partialModifiedInputModule: PartialModifiedInputModuleContract? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +65,7 @@ class MainActivity : AppCompatActivity(), CasesFragment.Host {
     }
 
     override fun showCase2Fragment() {
+        replaceFragment(partialModifiedInputModule!!.createFragment())
     }
 
     override fun showCase3Fragment() {

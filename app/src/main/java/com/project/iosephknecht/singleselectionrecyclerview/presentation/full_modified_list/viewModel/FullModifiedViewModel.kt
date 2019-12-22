@@ -1,8 +1,7 @@
 package com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.project.iosephknecht.singleselectionrecyclerview.data.SomeCategory
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeModel
 import com.project.iosephknecht.singleselectionrecyclerview.domain.SomeModelDataSource
 import com.project.iosephknecht.singleselectionrecyclerview.domain.ValidateService
@@ -36,9 +35,12 @@ internal class FullModifiedViewModel(
     )
 
     private var validateDisposable: Disposable? = null
+    private var generateDisposable: Disposable? = null
 
     override fun onCleared() {
-        stateController.release()
+        validateDisposable?.dispose()
+        generateDisposable?.dispose()
+        super.onCleared()
     }
 
     override fun select(viewState: SelectableViewState) {
@@ -48,19 +50,20 @@ internal class FullModifiedViewModel(
     }
 
     override fun add() {
-        items.value?.also {
-            val newIndex = it.size
+        val index = items.value?.size ?: 0
 
-            stateController.addItem(
-                SelectableViewState(
-                    someModel = SomeModel(
-                        UUID.randomUUID(),
-                        label = SomeCategory.CATEGORY1,
-                        value = "value_${newIndex}"
-                    )
-                )
+        generateDisposable?.dispose()
+        generateDisposable = generateViewState(index)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    stateController.addItem(it)
+                },
+                {
+                    Log.e(this::class.qualifiedName, it.localizedMessage, it)
+                }
             )
-        }
     }
 
     override fun confirmAdd() {
@@ -84,6 +87,21 @@ internal class FullModifiedViewModel(
         validate(viewState)
     }
 
+    override fun mapToViewStates(): Collection<SelectableViewState> {
+        return someModelDataSource.generateSomeModelList(100)
+            .map { list ->
+                list.map {
+                    SelectableViewState(
+                        someModel = it,
+                        isCouldRemoved = true,
+                        isEditableLabel = true,
+                        isEditableValue = true
+                    )
+                }
+            }
+            .blockingGet()
+    }
+
     override fun onFullUpdate(list: Collection<SelectableViewState>) {
         this.items.value = ArrayList(list)
     }
@@ -105,6 +123,18 @@ internal class FullModifiedViewModel(
             changedLabel = viewState.someModel.label,
             changedValue = viewState.someModel.value
         )
+    }
+
+    private fun generateViewState(index: Int): Single<SelectableViewState> {
+        return someModelDataSource.generateSomeModel(index)
+            .map {
+                SelectableViewState(
+                    someModel = it,
+                    isCouldRemoved = true,
+                    isEditableLabel = true,
+                    isEditableValue = true
+                )
+            }
     }
 
     private fun validate(viewState: SelectableViewState) {
@@ -170,13 +200,5 @@ internal class FullModifiedViewModel(
             label = label,
             value = value.toString()
         )
-    }
-
-    override fun mapToViewStates(): Collection<SelectableViewState> {
-        return someModelDataSource.generateSomeModelList(100)
-            .map { list ->
-                list.map { SelectableViewState(it) }
-            }
-            .blockingGet()
     }
 }

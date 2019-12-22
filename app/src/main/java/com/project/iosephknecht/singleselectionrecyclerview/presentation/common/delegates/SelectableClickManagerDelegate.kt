@@ -8,7 +8,6 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 
 class SelectableClickManagerDelegate(
-    private val canBeModified: Boolean,
     private val selectableAction: (viewState: SelectableViewState) -> Unit,
     private val removeAction: ((viewState: SelectableViewState) -> Unit)?,
     private val applyChangesAction: ((viewState: SelectableViewState) -> Unit)?
@@ -50,7 +49,7 @@ class SelectableClickManagerDelegate(
 
                 service?.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
             }
-        }.takeIf { isSelected && canBeModified }
+        }.takeIf { isSelected && element.isEditableValue }
 
         with(viewProvider) {
             rootView.setOnClickListener(selectedClick)

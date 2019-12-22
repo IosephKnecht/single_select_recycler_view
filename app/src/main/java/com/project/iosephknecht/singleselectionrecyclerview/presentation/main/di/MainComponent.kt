@@ -8,6 +8,8 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_mo
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.main.MainActivity
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.only_selection.OnlySelectionInputModule
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.only_selection.OnlySelectionInputModuleImpl
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.partial_modified_list.PartialModifiedInputModule
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.partial_modified_list.PartialModifiedInputModuleContract
 import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
@@ -41,5 +43,11 @@ internal class MainComponentModule {
     @PerFeatureLayerScrope
     fun provideFullModifiedInputModule(): FullModifiedInputModuleContract {
         return FullModifiedInputModule()
+    }
+
+    @Provides
+    @PerFeatureLayerScrope
+    fun providePartialModifiedInputModule(): PartialModifiedInputModuleContract {
+        return PartialModifiedInputModule()
     }
 }

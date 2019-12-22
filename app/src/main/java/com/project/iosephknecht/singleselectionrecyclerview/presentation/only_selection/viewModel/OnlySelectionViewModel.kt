@@ -33,11 +33,16 @@ internal class OnlySelectionViewModel(
 
     override fun mapToViewStates(): Collection<SelectableViewState> {
         return someModelDataSource.generateSomeModelList(100)
-            .map { models -> models.map {
-                SelectableViewState(
-                    it
-                )
-            } }
+            .map { models ->
+                models.map {
+                    SelectableViewState(
+                        someModel = it,
+                        isCouldRemoved = false,
+                        isEditableLabel = false,
+                        isEditableValue = false
+                    )
+                }
+            }
             .blockingGet()
     }
 }

@@ -8,6 +8,8 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.SerialDisposable
 
 internal fun inflate(
     parent: ViewGroup,
@@ -29,5 +31,19 @@ internal fun RecyclerView.disableItemChangeAnimation() {
     itemAnimator?.apply {
         require(this is SimpleItemAnimator)
         supportsChangeAnimations = false
+    }
+}
+
+internal fun Disposable.set(serialDisposable: SerialDisposable) {
+    serialDisposable.set(this)
+}
+
+internal fun RecyclerView.scrollToLastPosition() {
+    adapter?.also {
+        val position = it.itemCount
+
+        if (position > 0) {
+            scrollToPosition(position - 1)
+        }
     }
 }

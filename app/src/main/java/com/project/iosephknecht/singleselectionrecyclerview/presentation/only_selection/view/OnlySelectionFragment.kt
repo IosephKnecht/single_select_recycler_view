@@ -17,7 +17,7 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.disableItemChangeAnimation
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.only_selection.contract.OnlySelectionContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.requestApplicationAs
-import kotlinx.android.synthetic.main.fragment_selectable_list.*
+import kotlinx.android.synthetic.main.fragment_only_selection.*
 import javax.inject.Inject
 
 class OnlySelectionFragment : Fragment() {
@@ -46,7 +46,7 @@ class OnlySelectionFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_selectable_list, container, false)
+        return inflater.inflate(R.layout.fragment_only_selection, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,17 +58,12 @@ class OnlySelectionFragment : Fragment() {
                 unselectableBackground = android.R.color.white
             ),
             SelectableClickManagerDelegate(
-                canBeModified = false,
                 selectableAction = viewModel!!::select,
                 applyChangesAction = null,
                 removeAction = null
             ),
-            SelectableValueDelegate(
-                canBeModified = false
-            ),
-            SelectableCategoryDelegate(
-                canBeModified = false
-            )
+            SelectableValueDelegate(),
+            SelectableCategoryDelegate()
         )
 
         recycler_view.apply {

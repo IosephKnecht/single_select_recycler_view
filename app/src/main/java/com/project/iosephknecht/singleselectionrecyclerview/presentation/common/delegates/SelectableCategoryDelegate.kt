@@ -3,9 +3,7 @@ package com.project.iosephknecht.singleselectionrecyclerview.presentation.common
 import android.widget.Spinner
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 
-class SelectableCategoryDelegate(
-    private val canBeModified: Boolean
-) :
+class SelectableCategoryDelegate :
     AbstractAdapterDelegate<SelectableCategoryDelegate.ViewProvider, SelectableViewState> {
 
     interface ViewProvider : AbstractAdapterDelegate.BaseViewProvider {
@@ -24,7 +22,7 @@ class SelectableCategoryDelegate(
                     element.changedLabel.ordinal
                 )
 
-                isEnabled = canBeModified && element.isSelected
+                isEnabled = element.isEditableLabel && element.isSelected
             }
 
             bindSpinnerClickListener(element)

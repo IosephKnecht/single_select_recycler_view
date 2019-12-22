@@ -10,14 +10,20 @@ import kotlin.random.Random.Default.nextInt
 internal class SomeModelDataSourceImpl : SomeModelDataSource {
     override fun generateSomeModelList(count: Int): Single<List<SomeModel>> {
         return Observable.fromIterable(0 until count)
-            .map { index ->
-                SomeModel(
-                    uuid = UUID.randomUUID(),
-                    value = "value $index",
-                    label = nextCategory()
-                )
-            }
+            .map { index -> nextSomeModel(index) }
             .toList()
+    }
+
+    override fun generateSomeModel(index: Int): Single<SomeModel> {
+        return Single.just(nextSomeModel(index))
+    }
+
+    private fun nextSomeModel(index: Int): SomeModel {
+        return SomeModel(
+            uuid = UUID.randomUUID(),
+            value = "value $index",
+            label = nextCategory()
+        )
     }
 
     private fun nextCategory(): SomeCategory {

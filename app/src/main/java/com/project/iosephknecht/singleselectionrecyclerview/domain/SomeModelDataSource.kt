@@ -5,4 +5,5 @@ import io.reactivex.Single
 
 interface SomeModelDataSource {
     fun generateSomeModelList(count: Int): Single<List<SomeModel>>
+    fun generateSomeModel(index: Int): Single<SomeModel>
 }

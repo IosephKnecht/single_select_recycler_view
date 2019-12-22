@@ -9,6 +9,7 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.cases.d
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.di.FullModifiedComponent
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.main.di.MainComponent
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.only_selection.di.OnlySelectionComponent
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.partial_modified_list.di.PartialModifiedComponent
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -31,6 +32,7 @@ interface SingletonComponent {
     fun singleSelectionCasesSubComponentBuilder(): CasesComponent.Builder
     fun onlySelectionSubComponentBuilder(): OnlySelectionComponent.Builder
     fun fullModifiedSubComponentBuilder(): FullModifiedComponent.Builder
+    fun partialModifiedSubComponentBuilder(): PartialModifiedComponent.Builder
 }
 
 @Module
