@@ -17,10 +17,12 @@ class SelectableValueDelegate :
         with(viewProvider) {
             unbindValueTextWatcher()
 
+            // FIXME: too many flags
             val state = when {
                 element.isLoading -> CustomEditTextView.State.LOADING
                 !element.isEditableValue && element.isCouldRemoved -> CustomEditTextView.State.READABLE_WITH_REMOVE
                 element.isEditableValue && element.isSelected -> CustomEditTextView.State.EDITABLE
+                element.isEditableValue && !element.isSelected -> CustomEditTextView.State.READABLE_WITH_REMOVE
                 else -> CustomEditTextView.State.ONLY_READABLE
             }
 

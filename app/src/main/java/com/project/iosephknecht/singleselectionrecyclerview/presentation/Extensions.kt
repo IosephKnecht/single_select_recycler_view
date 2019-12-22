@@ -47,3 +47,7 @@ internal fun RecyclerView.scrollToLastPosition() {
         }
     }
 }
+
+internal fun View.visible(visible: Boolean) {
+    visibility = if (visible) View.VISIBLE else View.GONE
+}

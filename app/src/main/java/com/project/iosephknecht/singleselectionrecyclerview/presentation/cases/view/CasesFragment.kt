@@ -13,6 +13,7 @@ import com.project.iosephknecht.singleselectionrecyclerview.R
 import com.project.iosephknecht.singleselectionrecyclerview.application.SingletonComponentHolder
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.cases.contract.CasesContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.cases.view.adapter.CasesAdapter
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.main.model.SingleSelectionCase
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.requestApplicationAs
 import kotlinx.android.synthetic.main.fragment_cases.*
 import javax.inject.Inject
@@ -32,9 +33,7 @@ class CasesFragment : Fragment() {
     private var casesAdapter: CasesAdapter? = null
 
     interface Host {
-        fun showCase1Fragment()
-        fun showCase2Fragment()
-        fun showCase3Fragment()
+        fun showCasesFragment(case: SingleSelectionCase)
     }
 
     override fun onAttach(context: Context) {
@@ -59,11 +58,7 @@ class CasesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        casesAdapter = CasesAdapter(
-            clickCase1 = host!!::showCase1Fragment,
-            clickCase2 = host!!::showCase2Fragment,
-            clickCase3 = host!!::showCase3Fragment
-        )
+        casesAdapter = CasesAdapter(host!!::showCasesFragment)
 
         recycler_view.apply {
             layoutManager = LinearLayoutManager(context)

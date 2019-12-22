@@ -9,9 +9,7 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.inflate
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.main.model.SingleSelectionCase
 
 class CasesAdapter(
-    private val clickCase1: () -> Unit,
-    private val clickCase2: () -> Unit,
-    private val clickCase3: () -> Unit
+    private val itemClick: (SingleSelectionCase) -> Unit
 ) :
     RecyclerView.Adapter<CasesAdapter.ViewHolder>() {
 
@@ -30,13 +28,7 @@ class CasesAdapter(
             title.text = context.resources.getString(case.title)
             description.text = context.resources.getString(case.description)
 
-            val clickListener = when (case) {
-                SingleSelectionCase.CASE1 -> View.OnClickListener { clickCase1.invoke() }
-                SingleSelectionCase.CASE2 -> View.OnClickListener { clickCase2.invoke() }
-                SingleSelectionCase.CASE3 -> View.OnClickListener { clickCase3.invoke() }
-            }
-
-            itemView.setOnClickListener(clickListener)
+            itemView.setOnClickListener { itemClick.invoke(case) }
         }
     }
 

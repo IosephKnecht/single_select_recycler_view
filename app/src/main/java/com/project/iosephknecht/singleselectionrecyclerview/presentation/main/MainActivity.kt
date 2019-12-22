@@ -8,9 +8,14 @@ import com.project.iosephknecht.singleselectionrecyclerview.application.Singleto
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.cases.CasesInputModuleContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.cases.view.CasesFragment
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.FullModifiedInputModuleContract
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.main.model.SingleSelectionCase
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.only_selection.OnlySelectionInputModule
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.partial_modified_list.PartialModifiedInputModuleContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.requestApplicationAs
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.visible
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.layout_toolbar.*
+import kotlinx.android.synthetic.main.layout_toolbar.view.*
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), CasesFragment.Host {
@@ -40,6 +45,10 @@ class MainActivity : AppCompatActivity(), CasesFragment.Host {
             .mainSubComponentBuilder()
             .build()
             .inject(this)
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
 
         supportFragmentManager.findFragmentByTag(CASES_FRAGMENT_TAG).also { fragment ->
             if (fragment == null) {
@@ -51,25 +60,45 @@ class MainActivity : AppCompatActivity(), CasesFragment.Host {
                     )
                     .commit()
             }
+
+            toolbar_navigation_icon.visible(false)
+            setToolbarText(null)
         }
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            toolbar_navigation_icon.visible(supportFragmentManager.backStackEntryCount >= 1)
+        }
+
+        toolbar_navigation_icon.setOnClickListener { onBackPressed() }
     }
 
     override fun onDestroy() {
         casesInputModule = null
+        onlySelectionInputModule = null
+        partialModifiedInputModule = null
+        fullModifiedInputModule = null
 
         super.onDestroy()
     }
 
-    override fun showCase1Fragment() {
-        replaceFragment(onlySelectionInputModule!!.createFragment())
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        if (supportFragmentManager.backStackEntryCount == 0) {
+            setToolbarText(null)
+        }
     }
 
-    override fun showCase2Fragment() {
-        replaceFragment(partialModifiedInputModule!!.createFragment())
-    }
+    override fun showCasesFragment(case: SingleSelectionCase) {
+        val fragment = when (case) {
+            SingleSelectionCase.CASE1 -> onlySelectionInputModule!!.createFragment()
+            SingleSelectionCase.CASE2 -> partialModifiedInputModule!!.createFragment()
+            SingleSelectionCase.CASE3 -> fullModifiedInputModule!!.createFragment()
+        }
 
-    override fun showCase3Fragment() {
-        replaceFragment(fullModifiedInputModule!!.createFragment())
+        replaceFragment(fragment)
+
+        setToolbarText(case)
     }
 
     private fun replaceFragment(fragment: Fragment) {
@@ -77,5 +106,16 @@ class MainActivity : AppCompatActivity(), CasesFragment.Host {
             .replace(R.id.body, fragment)
             .addToBackStack(null)
             .commit()
+    }
+
+    private fun setToolbarText(case: SingleSelectionCase?) {
+        val titleValue = case?.title ?: R.string.app_name
+        val subtitleValue = case?.description
+
+        toolbar_title.text = getString(titleValue)
+        toolbar_subtitle.apply {
+            visible(subtitleValue != null)
+            text = subtitleValue?.let { getString(it) }
+        }
     }
 }

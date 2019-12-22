@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="extra_small_padding">4dp</dimen>
+    <dimen name="small_padding">6dp</dimen>
+    <dimen name="medium_padding">8dp</dimen>
+    <dimen name="large_padding">10dp</dimen>
+
+    <dimen name="toolbar_title_text_size">16sp</dimen>
+    <dimen name="toolbar_subtitle_text_size">12sp</dimen>
+
+    <dimen name="toolbar_icon_size">36dp</dimen>
+</resources>

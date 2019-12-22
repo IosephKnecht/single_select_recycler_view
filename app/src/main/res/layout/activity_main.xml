@@ -4,19 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
+    <include
         android:id="@+id/toolbar"
+        layout="@layout/layout_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="?attr/toolbarStyle">
-
-        <TextView
-            android:id="@+id/toolbar_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name" />
-
-    </androidx.appcompat.widget.Toolbar>
+        android:layout_height="wrap_content" />
 
     <FrameLayout
         android:id="@+id/body"
