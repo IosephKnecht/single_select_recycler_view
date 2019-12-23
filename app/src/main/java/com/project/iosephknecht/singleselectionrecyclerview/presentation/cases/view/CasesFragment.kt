@@ -18,6 +18,11 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.request
 import kotlinx.android.synthetic.main.fragment_cases.*
 import javax.inject.Inject
 
+/**
+ * A fragment for presenting a cases list.
+ *
+ * @author IosephKnecht
+ */
 class CasesFragment : Fragment() {
 
     companion object {

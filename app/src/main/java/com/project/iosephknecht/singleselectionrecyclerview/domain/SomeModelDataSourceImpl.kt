@@ -7,6 +7,11 @@ import io.reactivex.Single
 import java.util.*
 import kotlin.random.Random.Default.nextInt
 
+/**
+ * Implementation on [SomeModelDataSource].
+ *
+ * @author IosephKnecht
+ */
 internal class SomeModelDataSourceImpl : SomeModelDataSource {
     override fun generateSomeModelList(count: Int): Single<List<SomeModel>> {
         return Observable.fromIterable(0 until count)

@@ -8,6 +8,11 @@ import com.project.iosephknecht.singleselectionrecyclerview.R
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.inflate
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.main.model.SingleSelectionCase
 
+/**
+ * An adapter for presenting a cases list.
+ *
+ * @author IosephKnecht
+ */
 class CasesAdapter(
     private val itemClick: (SingleSelectionCase) -> Unit
 ) :

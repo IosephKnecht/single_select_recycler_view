@@ -14,6 +14,11 @@ import dagger.Provides
 import dagger.Subcomponent
 import javax.inject.Inject
 
+/**
+ * Contract for DI - container.
+ *
+ * @author IosephKnecht
+ */
 @PerFeatureLayerScrope
 @Subcomponent(modules = [CasesComponentModule::class])
 interface CasesComponent {

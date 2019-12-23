@@ -4,6 +4,11 @@ import android.content.res.Resources
 import androidx.annotation.StringRes
 import com.project.iosephknecht.singleselectionrecyclerview.R
 
+/**
+ * Presentation model for category value.
+ *
+ * @author IosephKnecht
+ */
 enum class SomeCategory(
     @StringRes val stringRes: Int
 ) {

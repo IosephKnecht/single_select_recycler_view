@@ -16,6 +16,11 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
+/**
+ * Contract to DI - container.
+ *
+ * @author IosephKnecht
+ */
 @Singleton
 @Component(modules = [SingletonComponentModule::class])
 interface SingletonComponent {

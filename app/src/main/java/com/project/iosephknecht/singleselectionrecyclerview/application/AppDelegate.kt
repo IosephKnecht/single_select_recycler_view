@@ -2,6 +2,11 @@ package com.project.iosephknecht.singleselectionrecyclerview.application
 
 import android.app.Application
 
+/**
+ * Custom [Application] instance.
+ *
+ * @author IosephKnecht
+ */
 internal class AppDelegate : Application(),
     SingletonComponentHolder {
 
