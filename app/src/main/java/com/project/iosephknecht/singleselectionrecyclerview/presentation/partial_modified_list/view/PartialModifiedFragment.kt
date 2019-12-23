@@ -12,12 +12,11 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.project.iosephknecht.singleselectionrecyclerview.R
 import com.project.iosephknecht.singleselectionrecyclerview.application.SingletonComponentHolder
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableBackgroundDelegate
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableCategoryDelegate
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableClickManagerDelegate
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableValueDelegate
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.*
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.ui.CustomEditTextView
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.disableItemChangeAnimation
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.getFloatDimension
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.partial_modified_list.contract.PartialModifiedContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.partial_modified_list.view.adapter.PartialModifiedAdapter
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.requestApplicationAs
@@ -63,12 +62,18 @@ class PartialModifiedFragment : Fragment() {
                 unselectableBackground = android.R.color.white,
                 selectableBackground = R.color.accent
             ),
+            selectableTranslationDelegate = SelectableTranslationDelegate(
+                unselectedTranslationZ = resources.getFloatDimension(R.dimen.defaultTranslationZ),
+                selectedTranslationZ = resources.getFloatDimension(R.dimen.selectableTranslationZ)
+            ),
             selectableClickManagerDelegate = SelectableClickManagerDelegate(
                 selectableAction = viewModel!!::select,
                 removeAction = viewModel!!::remove,
                 applyChangesAction = null
             ),
-            selectableValueDelegate = SelectableValueDelegate(),
+            selectableValueDelegate = SelectableValueDelegate(
+                defaultState = CustomEditTextView.State.READABLE_WITH_REMOVE
+            ),
             selectableCategoryDelegate = SelectableCategoryDelegate()
         )
 

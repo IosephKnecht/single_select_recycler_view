@@ -10,11 +10,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.project.iosephknecht.singleselectionrecyclerview.R
 import com.project.iosephknecht.singleselectionrecyclerview.application.SingletonComponentHolder
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableBackgroundDelegate
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableCategoryDelegate
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableClickManagerDelegate
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableValueDelegate
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.*
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.ui.CustomEditTextView
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.disableItemChangeAnimation
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.getFloatDimension
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.only_selection.contract.OnlySelectionContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.requestApplicationAs
 import kotlinx.android.synthetic.main.fragment_only_selection.*
@@ -53,17 +52,23 @@ class OnlySelectionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = OnlySelectionAdapter(
-            SelectableBackgroundDelegate(
+            selectableBackgroundDelegate = SelectableBackgroundDelegate(
                 selectableBackground = R.color.accent,
                 unselectableBackground = android.R.color.white
             ),
-            SelectableClickManagerDelegate(
+            selectableTranslationDelegate = SelectableTranslationDelegate(
+                unselectedTranslationZ = resources.getFloatDimension(R.dimen.defaultTranslationZ),
+                selectedTranslationZ = resources.getFloatDimension(R.dimen.selectableTranslationZ)
+            ),
+            selectableClickManagerDelegate = SelectableClickManagerDelegate(
                 selectableAction = viewModel!!::select,
                 applyChangesAction = null,
                 removeAction = null
             ),
-            SelectableValueDelegate(),
-            SelectableCategoryDelegate()
+            selectableValueDelegate = SelectableValueDelegate(
+                defaultState = CustomEditTextView.State.ONLY_READABLE
+            ),
+            selectableCategoryDelegate = SelectableCategoryDelegate()
         )
 
         recycler_view.apply {

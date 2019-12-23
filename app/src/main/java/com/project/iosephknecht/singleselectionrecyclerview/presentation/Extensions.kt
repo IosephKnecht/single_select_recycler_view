@@ -1,9 +1,12 @@
 package com.project.iosephknecht.singleselectionrecyclerview.presentation
 
 import android.app.Activity
+import android.content.res.Resources
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -50,4 +53,10 @@ internal fun RecyclerView.scrollToLastPosition() {
 
 internal fun View.visible(visible: Boolean) {
     visibility = if (visible) View.VISIBLE else View.GONE
+}
+
+internal fun Resources.getFloatDimension(@DimenRes resId: Int): Float {
+    val outValue = TypedValue()
+    getValue(resId, outValue, true)
+    return outValue.float
 }

@@ -17,6 +17,7 @@ import java.util.*
 
 class FullModifiedAdapter(
     private val selectableBackgroundDelegate: SelectableBackgroundDelegate,
+    private val selectableTranslationDelegate: SelectableTranslationDelegate,
     private val selectableClickManagerDelegate: SelectableClickManagerDelegate,
     private val selectableValueDelegate: SelectableValueDelegate,
     private val selectableCategoryDelegate: SelectableCategoryDelegate,
@@ -45,6 +46,7 @@ class FullModifiedAdapter(
         val element = items[position]
 
         selectableBackgroundDelegate.bind(holder, element)
+        selectableTranslationDelegate.bind(holder, element)
         selectableClickManagerDelegate.bind(holder, element)
         selectableValueDelegate.bind(holder, element)
         selectableCategoryDelegate.bind(holder, element)

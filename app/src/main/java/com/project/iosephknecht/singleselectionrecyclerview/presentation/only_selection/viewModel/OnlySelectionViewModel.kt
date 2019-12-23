@@ -37,7 +37,6 @@ internal class OnlySelectionViewModel(
                 models.map {
                     SelectableViewState(
                         someModel = it,
-                        isCouldRemoved = false,
                         isEditableLabel = false,
                         isEditableValue = false
                     )

@@ -93,7 +93,6 @@ internal class FullModifiedViewModel(
                 list.map {
                     SelectableViewState(
                         someModel = it,
-                        isCouldRemoved = true,
                         isEditableLabel = true,
                         isEditableValue = true
                     )
@@ -130,7 +129,6 @@ internal class FullModifiedViewModel(
             .map {
                 SelectableViewState(
                     someModel = it,
-                    isCouldRemoved = true,
                     isEditableLabel = true,
                     isEditableValue = true
                 )

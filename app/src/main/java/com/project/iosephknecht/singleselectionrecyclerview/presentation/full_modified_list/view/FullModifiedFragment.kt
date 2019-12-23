@@ -15,10 +15,12 @@ import com.project.iosephknecht.singleselectionrecyclerview.R
 import com.project.iosephknecht.singleselectionrecyclerview.application.SingletonComponent
 import com.project.iosephknecht.singleselectionrecyclerview.application.SingletonComponentHolder
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.*
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.ui.CustomEditTextView
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.disableItemChangeAnimation
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.contract.FullModifiedContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.view.adapter.FullModifiedAdapter
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.getFloatDimension
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.requestApplicationAs
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.scrollToLastPosition
 import kotlinx.android.synthetic.main.fragment_full_modified.*
@@ -61,12 +63,19 @@ class FullModifiedFragment : Fragment() {
                 unselectableBackground = android.R.color.white,
                 selectableBackground = R.color.accent
             ),
+            selectableTranslationDelegate = SelectableTranslationDelegate(
+                unselectedTranslationZ = resources.getFloatDimension(R.dimen.defaultTranslationZ),
+                selectedTranslationZ = resources.getFloatDimension(R.dimen.selectableTranslationZ)
+            ),
             selectableClickManagerDelegate = SelectableClickManagerDelegate(
                 selectableAction = viewModel!!::select,
                 applyChangesAction = viewModel!!::applyChanges,
                 removeAction = viewModel!!::remove
             ),
-            selectableValueDelegate = SelectableValueDelegate(),
+            selectableValueDelegate = SelectableValueDelegate(
+                defaultState = CustomEditTextView.State.READABLE_WITH_REMOVE,
+                selectedState = CustomEditTextView.State.EDITABLE
+            ),
             selectableCategoryDelegate = SelectableCategoryDelegate(),
             selectableErrorDelegate = SelectableErrorDelegate(
                 defaultBackground = R.drawable.bg_edittext_border,

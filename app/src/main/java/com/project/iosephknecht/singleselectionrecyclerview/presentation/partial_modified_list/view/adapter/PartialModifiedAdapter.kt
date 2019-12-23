@@ -7,10 +7,7 @@ import android.widget.Spinner
 import androidx.recyclerview.widget.RecyclerView
 import com.project.iosephknecht.singleselectionrecyclerview.R
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeCategory
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableBackgroundDelegate
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableCategoryDelegate
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableClickManagerDelegate
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.SelectableValueDelegate
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.delegates.*
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.ui.CustomEditTextView
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.inflate
@@ -18,6 +15,7 @@ import java.util.*
 
 internal class PartialModifiedAdapter(
     private val selectableBackgroundDelegate: SelectableBackgroundDelegate,
+    private val selectableTranslationDelegate: SelectableTranslationDelegate,
     private val selectableClickManagerDelegate: SelectableClickManagerDelegate,
     private val selectableValueDelegate: SelectableValueDelegate,
     private val selectableCategoryDelegate: SelectableCategoryDelegate
@@ -33,6 +31,7 @@ internal class PartialModifiedAdapter(
         val element = items[position]
 
         selectableBackgroundDelegate.bind(holder, element)
+        selectableTranslationDelegate.bind(holder, element)
         selectableClickManagerDelegate.bind(holder, element)
         selectableValueDelegate.bind(holder, element)
         selectableCategoryDelegate.bind(holder, element)

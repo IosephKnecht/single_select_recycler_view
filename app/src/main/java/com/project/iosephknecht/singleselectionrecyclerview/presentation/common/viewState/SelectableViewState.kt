@@ -9,7 +9,6 @@ data class SelectableViewState(
     var someModel: SomeModel,
     val isEditableValue: Boolean,
     val isEditableLabel: Boolean,
-    val isCouldRemoved: Boolean,
     var isValid: Boolean = true,
     var isLoading: Boolean = false,
     override var isSelected: Boolean = false

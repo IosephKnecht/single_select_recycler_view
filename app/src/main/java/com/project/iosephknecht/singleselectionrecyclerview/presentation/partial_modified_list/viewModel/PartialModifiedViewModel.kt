@@ -79,7 +79,6 @@ internal class PartialModifiedViewModel(
                 list.map {
                     SelectableViewState(
                         someModel = it,
-                        isCouldRemoved = true,
                         isEditableValue = false,
                         isEditableLabel = false
                     )
@@ -93,7 +92,6 @@ internal class PartialModifiedViewModel(
             .map {
                 SelectableViewState(
                     someModel = it,
-                    isCouldRemoved = true,
                     isEditableValue = false,
                     isEditableLabel = false
                 )

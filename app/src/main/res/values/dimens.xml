@@ -9,4 +9,7 @@
     <dimen name="toolbar_subtitle_text_size">12sp</dimen>
 
     <dimen name="toolbar_icon_size">36dp</dimen>
+
+    <item name="defaultTranslationZ" format="float" type="dimen">0</item>
+    <item name="selectableTranslationZ" format="float" type="dimen">10</item>
 </resources>
