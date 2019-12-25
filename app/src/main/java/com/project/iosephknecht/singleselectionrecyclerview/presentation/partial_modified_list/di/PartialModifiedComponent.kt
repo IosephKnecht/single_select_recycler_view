@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.project.iosephknecht.singleselectionrecyclerview.domain.SomeModelDataSource
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.PerFeatureLayerScrope
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.PerFeatureLayerScope
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.partial_modified_list.contract.PartialModifiedContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.partial_modified_list.view.PartialModifiedFragment
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.partial_modified_list.viewModel.PartialModifiedViewModel
@@ -15,7 +15,7 @@ import dagger.Provides
 import dagger.Subcomponent
 import javax.inject.Inject
 
-@PerFeatureLayerScrope
+@PerFeatureLayerScope
 @Subcomponent(modules = [PartialModifiedComponentModule::class])
 interface PartialModifiedComponent {
 
@@ -41,7 +41,7 @@ internal class PartialModifiedComponentModule {
     }
 }
 
-@PerFeatureLayerScrope
+@PerFeatureLayerScope
 internal class PartialModifiedViewModelFactory @Inject constructor(
     private val someModelDataSource: SomeModelDataSource
 ) : ViewModelProvider.Factory {

@@ -5,6 +5,17 @@ import com.project.iosephknecht.singleselectionrecyclerview.data.SomeModel
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.base_selectable.controller.SelectableItem
 import java.util.*
 
+/**
+ * View state for wrapping [SomeModel].
+ *
+ * @param someModel
+ * @param isEditableLabel
+ * @param isValid
+ * @param isLoading
+ * @param isSelected
+ *
+ * @author IosephKnecht.
+ */
 data class SelectableViewState(
     var someModel: SomeModel,
     val isEditableValue: Boolean,

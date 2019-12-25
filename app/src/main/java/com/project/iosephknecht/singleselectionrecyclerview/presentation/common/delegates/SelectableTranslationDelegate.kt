@@ -2,7 +2,12 @@ package com.project.iosephknecht.singleselectionrecyclerview.presentation.common
 
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 
-class SelectableTranslationDelegate(
+/**
+ * Implementation of [AbstractAdapterDelegate] for changing translationZ param.
+ *
+ * @author IosephKnecht
+ */
+internal class SelectableTranslationDelegate(
     private val unselectedTranslationZ: Float,
     private val selectedTranslationZ: Float
 ) : AbstractAdapterDelegate<AbstractAdapterDelegate.BaseViewProvider, SelectableViewState> {

@@ -5,7 +5,12 @@ import androidx.core.content.ContextCompat
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.ui.CustomEditTextView
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 
-class SelectableErrorDelegate(
+/**
+ * Implementation of [AbstractAdapterDelegate] for changing background color on error state.
+ *
+ * @author IosephKnecht.
+ */
+internal class SelectableErrorDelegate(
     @DrawableRes
     private val defaultBackground: Int,
     @DrawableRes

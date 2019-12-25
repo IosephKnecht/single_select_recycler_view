@@ -2,7 +2,7 @@ package com.project.iosephknecht.singleselectionrecyclerview.presentation.main.d
 
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.cases.CasesInputModule
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.cases.CasesInputModuleContract
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.PerFeatureLayerScrope
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.PerFeatureLayerScope
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.FullModifiedInputModule
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.FullModifiedInputModuleContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.main.MainActivity
@@ -14,7 +14,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
 
-@PerFeatureLayerScrope
+@PerFeatureLayerScope
 @Subcomponent(modules = [MainComponentModule::class])
 interface MainComponent {
     @Subcomponent.Builder
@@ -28,25 +28,25 @@ interface MainComponent {
 @Module
 internal class MainComponentModule {
     @Provides
-    @PerFeatureLayerScrope
+    @PerFeatureLayerScope
     fun provideCasesInputModule(): CasesInputModuleContract {
         return CasesInputModule()
     }
 
     @Provides
-    @PerFeatureLayerScrope
+    @PerFeatureLayerScope
     fun provideOnlySelectionInputModule(): OnlySelectionInputModule {
         return OnlySelectionInputModuleImpl()
     }
 
     @Provides
-    @PerFeatureLayerScrope
+    @PerFeatureLayerScope
     fun provideFullModifiedInputModule(): FullModifiedInputModuleContract {
         return FullModifiedInputModule()
     }
 
     @Provides
-    @PerFeatureLayerScrope
+    @PerFeatureLayerScope
     fun providePartialModifiedInputModule(): PartialModifiedInputModuleContract {
         return PartialModifiedInputModule()
     }

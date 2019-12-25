@@ -3,7 +3,12 @@ package com.project.iosephknecht.singleselectionrecyclerview.presentation.common
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.ui.CustomEditTextView
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 
-class SelectableValueDelegate(
+/**
+ * Implementation of [AbstractAdapterDelegate] for binding value.
+ *
+ * @author IosephKnecht
+ */
+internal class SelectableValueDelegate(
     private val defaultState: CustomEditTextView.State,
     private val selectedState: CustomEditTextView.State? = null
 ) : AbstractAdapterDelegate<SelectableValueDelegate.ViewProvider, SelectableViewState> {

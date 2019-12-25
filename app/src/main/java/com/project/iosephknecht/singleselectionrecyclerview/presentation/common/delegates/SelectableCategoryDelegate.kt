@@ -3,7 +3,12 @@ package com.project.iosephknecht.singleselectionrecyclerview.presentation.common
 import android.widget.Spinner
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 
-class SelectableCategoryDelegate :
+/**
+ * Implementation of [AbstractAdapterDelegate] for binding category value.
+ *
+ * @author IosephKnecht
+ */
+internal class SelectableCategoryDelegate :
     AbstractAdapterDelegate<SelectableCategoryDelegate.ViewProvider, SelectableViewState> {
 
     interface ViewProvider : AbstractAdapterDelegate.BaseViewProvider {

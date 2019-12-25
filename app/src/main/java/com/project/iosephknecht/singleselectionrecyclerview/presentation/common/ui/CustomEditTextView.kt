@@ -13,33 +13,56 @@ import android.widget.ProgressBar
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.project.iosephknecht.singleselectionrecyclerview.R
 
-class CustomEditTextView @JvmOverloads constructor(
+/**
+ * Custom editable field implementation with multi-state support.
+ *
+ * @author IosephKnecht
+ */
+internal class CustomEditTextView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0
 ) : ConstraintLayout(context, attrs, defStyle) {
 
-
+    /**
+     * State of view.
+     *
+     * @param inputType value of [InputType]
+     * @param applyBtnVisible visibility for apply button.
+     * @param removeBtnVisible visibility for remove button.
+     */
     enum class State(
         val inputType: Int,
         val applyBtnVisible: Int,
         val removeBtnVisible: Int
     ) {
+        /**
+         * May be editable.
+         */
         EDITABLE(
             inputType = InputType.TYPE_CLASS_TEXT,
             applyBtnVisible = View.VISIBLE,
             removeBtnVisible = View.VISIBLE
         ),
+        /**
+         * Only non-editable text field.
+         */
         ONLY_READABLE(
             inputType = InputType.TYPE_NULL,
             applyBtnVisible = View.GONE,
             removeBtnVisible = View.GONE
         ),
+        /**
+         * Only non-editable text field and remove button.
+         */
         READABLE_WITH_REMOVE(
             inputType = InputType.TYPE_NULL,
             applyBtnVisible = View.GONE,
             removeBtnVisible = View.VISIBLE
         ),
+        /**
+         * Only non-editable text field and progress bar.
+         */
         LOADING(
             inputType = InputType.TYPE_NULL,
             applyBtnVisible = View.GONE,

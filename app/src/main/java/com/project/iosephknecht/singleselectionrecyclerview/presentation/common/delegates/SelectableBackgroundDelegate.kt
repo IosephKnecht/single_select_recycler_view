@@ -3,7 +3,12 @@ package com.project.iosephknecht.singleselectionrecyclerview.presentation.common
 import androidx.annotation.ColorRes
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 
-class SelectableBackgroundDelegate(
+/**
+ * Implementation [AbstractAdapterDelegate] for changing background color.
+ *
+ * @author IosephKnecht
+ */
+internal class SelectableBackgroundDelegate(
     @ColorRes
     private val unselectableBackground: Int,
     @ColorRes

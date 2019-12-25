@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.project.iosephknecht.singleselectionrecyclerview.domain.SomeModelDataSource
 import com.project.iosephknecht.singleselectionrecyclerview.domain.ValidateService
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.PerFeatureLayerScrope
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.PerFeatureLayerScope
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.contract.FullModifiedContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.view.FullModifiedFragment
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.viewModel.FullModifiedViewModel
@@ -16,7 +16,7 @@ import dagger.Provides
 import dagger.Subcomponent
 import javax.inject.Inject
 
-@PerFeatureLayerScrope
+@PerFeatureLayerScope
 @Subcomponent(modules = [FullModifiedComponentModule::class])
 interface FullModifiedComponent {
     @Subcomponent.Builder
@@ -42,7 +42,7 @@ internal class FullModifiedComponentModule {
     }
 }
 
-@PerFeatureLayerScrope
+@PerFeatureLayerScope
 internal class FullModifiedViewModelFactory @Inject constructor(
     private val someModelDataSource: SomeModelDataSource,
     private val validateService: ValidateService

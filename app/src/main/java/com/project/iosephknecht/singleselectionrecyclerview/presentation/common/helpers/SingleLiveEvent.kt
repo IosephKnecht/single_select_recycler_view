@@ -8,6 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import java.util.concurrent.atomic.AtomicBoolean
 
+/**
+ * @see [https://github.com/wasabeef/kotlin-mvvm/blob/master/app/src/main/kotlin/jp/wasabeef/util/SingleLiveEvent.kt]
+ */
 internal class SingleLiveEvent<T> : MutableLiveData<T>() {
 
     private val mPending = AtomicBoolean(false)

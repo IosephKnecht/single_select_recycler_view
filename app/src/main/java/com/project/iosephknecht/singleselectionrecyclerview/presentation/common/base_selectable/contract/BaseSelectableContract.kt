@@ -4,6 +4,11 @@ import androidx.lifecycle.LiveData
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.base_selectable.controller.SelectableItem
 import java.io.Serializable
 
+/**
+ * Common contract for module with a list of [SelectableItem].
+ *
+ * @author IosephKnecht
+ */
 interface BaseSelectableContract {
 
     interface ViewModel<I : Serializable, T : SelectableItem<I>> {

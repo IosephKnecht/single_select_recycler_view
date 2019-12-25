@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.project.iosephknecht.singleselectionrecyclerview.domain.SomeModelDataSource
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.PerFeatureLayerScrope
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.PerFeatureLayerScope
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.only_selection.contract.OnlySelectionContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.only_selection.view.OnlySelectionFragment
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.only_selection.viewModel.OnlySelectionViewModel
@@ -15,7 +15,7 @@ import dagger.Provides
 import dagger.Subcomponent
 import javax.inject.Inject
 
-@PerFeatureLayerScrope
+@PerFeatureLayerScope
 @Subcomponent(modules = [OnlySelectionComponentModule::class])
 interface OnlySelectionComponent {
 

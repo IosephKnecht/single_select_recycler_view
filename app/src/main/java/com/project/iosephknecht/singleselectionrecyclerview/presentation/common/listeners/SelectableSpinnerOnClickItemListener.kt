@@ -4,7 +4,15 @@ import android.view.View
 import android.widget.AdapterView
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 
-class SelectableSpinnerOnClickItemListener(
+/**
+ * Implementation of [AdapterView.OnItemSelectedListener] for [SelectableViewState].
+ *
+ * P.S Two-way binding has already been invented
+ * @see [https://developer.android.com/topic/libraries/data-binding/two-way]
+ *
+ * @author IosephKnecht
+ */
+internal class SelectableSpinnerOnClickItemListener(
     private val block: SelectableViewState.(ordinal: Int) -> Unit
 ) : AdapterView.OnItemSelectedListener {
 

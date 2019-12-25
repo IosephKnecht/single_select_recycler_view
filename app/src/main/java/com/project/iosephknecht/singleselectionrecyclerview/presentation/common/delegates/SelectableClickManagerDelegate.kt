@@ -7,7 +7,12 @@ import android.widget.EditText
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.ui.CustomEditTextView
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 
-class SelectableClickManagerDelegate(
+/**
+ * Implementation of [AbstractAdapterDelegate] for binding click listeners on views.
+ *
+ * @author IosephKnecht
+ */
+internal class SelectableClickManagerDelegate(
     private val selectableAction: (viewState: SelectableViewState) -> Unit,
     private val removeAction: ((viewState: SelectableViewState) -> Unit)?,
     private val applyChangesAction: ((viewState: SelectableViewState) -> Unit)?

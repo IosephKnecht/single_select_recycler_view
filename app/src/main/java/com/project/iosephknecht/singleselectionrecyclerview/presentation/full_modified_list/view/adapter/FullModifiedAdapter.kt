@@ -15,7 +15,7 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.inflate
 import java.util.*
 
-class FullModifiedAdapter(
+internal class FullModifiedAdapter(
     private val selectableBackgroundDelegate: SelectableBackgroundDelegate,
     private val selectableTranslationDelegate: SelectableTranslationDelegate,
     private val selectableClickManagerDelegate: SelectableClickManagerDelegate,

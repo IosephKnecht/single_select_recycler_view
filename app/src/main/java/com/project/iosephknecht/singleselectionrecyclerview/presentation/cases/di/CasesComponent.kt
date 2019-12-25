@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.cases.contract.CasesContract
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.cases.view.CasesFragment
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.cases.viewModel.CasesViewModel
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.PerFeatureLayerScrope
+import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.PerFeatureLayerScope
 import dagger.BindsInstance
 import dagger.Module
 import dagger.Provides
@@ -19,7 +19,7 @@ import javax.inject.Inject
  *
  * @author IosephKnecht
  */
-@PerFeatureLayerScrope
+@PerFeatureLayerScope
 @Subcomponent(modules = [CasesComponentModule::class])
 interface CasesComponent {
 
@@ -56,7 +56,7 @@ internal class CasesComponentModule {
     }
 }
 
-@PerFeatureLayerScrope
+@PerFeatureLayerScope
 internal class CasesViewModelFactory @Inject constructor() : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
