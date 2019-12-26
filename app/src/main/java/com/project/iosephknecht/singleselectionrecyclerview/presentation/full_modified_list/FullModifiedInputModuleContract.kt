@@ -2,6 +2,11 @@ package com.project.iosephknecht.singleselectionrecyclerview.presentation.full_m
 
 import androidx.fragment.app.Fragment
 
+/**
+ * Contract to access module.
+ *
+ * @author IosephKnecht
+ */
 interface FullModifiedInputModuleContract {
     fun createFragment(): Fragment
 }

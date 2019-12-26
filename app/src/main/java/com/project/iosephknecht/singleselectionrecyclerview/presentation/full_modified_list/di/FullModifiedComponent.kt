@@ -16,6 +16,11 @@ import dagger.Provides
 import dagger.Subcomponent
 import javax.inject.Inject
 
+/**
+ * Contract for DI - container.
+ *
+ * @author IosephKnecht
+ */
 @PerFeatureLayerScope
 @Subcomponent(modules = [FullModifiedComponentModule::class])
 interface FullModifiedComponent {

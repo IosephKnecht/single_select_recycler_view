@@ -3,6 +3,11 @@ package com.project.iosephknecht.singleselectionrecyclerview.presentation.full_m
 import androidx.fragment.app.Fragment
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.view.FullModifiedFragment
 
+/**
+ * Implementation of [FullModifiedInputModuleContract].
+ *
+ * @author IosephKnecht
+ */
 class FullModifiedInputModule : FullModifiedInputModuleContract {
 
     override fun createFragment(): Fragment {

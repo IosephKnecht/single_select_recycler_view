@@ -17,6 +17,14 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
 
+/**
+ * Implementation of [BaseSelectableViewModel] for full modified list.
+ *
+ * @param someModelDataSource
+ * @param validateService
+ *
+ * @author IosephKnecht
+ */
 internal class FullModifiedViewModel(
     private val someModelDataSource: SomeModelDataSource,
     private val validateService: ValidateService

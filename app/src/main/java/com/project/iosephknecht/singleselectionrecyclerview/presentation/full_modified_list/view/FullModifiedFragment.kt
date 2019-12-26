@@ -26,6 +26,11 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.scrollT
 import kotlinx.android.synthetic.main.fragment_full_modified.*
 import javax.inject.Inject
 
+/**
+ * Fragment to view case 'Mutable list, mutable items'.
+ *
+ * @author IosephKnecht
+ */
 class FullModifiedFragment : Fragment() {
     companion object {
         fun createInstance() = FullModifiedFragment()

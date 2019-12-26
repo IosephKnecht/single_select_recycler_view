@@ -15,6 +15,11 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.inflate
 import java.util.*
 
+/**
+ * Adapter to view list with full modified items.
+ *
+ * @author IosephKnecht
+ */
 internal class FullModifiedAdapter(
     private val selectableBackgroundDelegate: SelectableBackgroundDelegate,
     private val selectableTranslationDelegate: SelectableTranslationDelegate,
