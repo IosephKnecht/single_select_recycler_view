@@ -29,8 +29,7 @@ internal class FullModifiedViewModel(
     private val someModelDataSource: SomeModelDataSource,
     private val validateService: ValidateService
 ) : BaseSelectableViewModel<UUID, SelectableViewState>(),
-    FullModifiedContract.ViewModel,
-    SingleSelectionController.ViewController<UUID, SelectableViewState> {
+    FullModifiedContract.ViewModel {
 
     override val items = MutableLiveData<Collection<SelectableViewState>>()
     override val addState = MutableLiveData(false)
@@ -38,9 +37,9 @@ internal class FullModifiedViewModel(
     override val confirmRemoveDialog = MutableLiveData<SelectableViewState>()
 
     override val stateController = SingleSelectionController(
-            items = mapToViewStates(),
-            viewController = this
-        )
+        items = mapToViewStates(),
+        viewController = this
+    )
 
     private var validateDisposable: Disposable? = null
     private var generateDisposable: Disposable? = null

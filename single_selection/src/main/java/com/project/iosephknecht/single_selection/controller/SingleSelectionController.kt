@@ -97,40 +97,6 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
         currentState.release()
     }
 
-    /**
-     * Contract for listener [SingleSelectionController].
-     *
-     * @author IosephKnecht
-     */
-    interface ViewController<I : Serializable, T : SelectableItem<I>> {
-        /**
-         * Callback to update some items.
-         */
-        fun onSoftUpdate(list: Collection<I>)
-
-        /**
-         * Callback to update all items.
-         */
-        fun onFullUpdate(list: Collection<T>)
-
-        /**
-         * Callback to notify about state of the add mode.
-         *
-         * @param willBeAdded true - if at the moment a new item is in list.
-         */
-        fun onAddNewElement(willBeAdded: Boolean) {}
-
-        /**
-         * Callback to reset intermediate model states.
-         */
-        fun onReset(viewState: T) {}
-
-        /**
-         * Callback called after declaration of intent to delete an item.
-         */
-        fun onRemove(viewState: T) {}
-    }
-
     private interface State<I : Serializable, T : SelectableItem<I>> {
         fun select(identifier: I) {}
         fun resetSelected() {}
@@ -147,8 +113,7 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
     /**
      * State when none of items in list is selected.
      */
-    private inner class Unselected :
-        State<I, T> {
+    private inner class Unselected : State<I, T> {
         override fun select(identifier: I) {
             mutableItems[identifier]?.also { viewState ->
                 currentSelectedItem = viewState.apply {
@@ -274,8 +239,7 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
     /**
      * State of adding a new item to list.
      */
-    private inner class ProcessAdd :
-        State<I, T> {
+    private inner class ProcessAdd : State<I, T> {
 
         override fun select(identifier: I) {
             if (currentSelectedItem!!.identifier == identifier) return
@@ -428,8 +392,7 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
     /**
      * State of deleting a currently selected item/
      */
-    private inner class ProcessSelectedRemove :
-        State<I, T> {
+    private inner class ProcessSelectedRemove : State<I, T> {
 
         override fun confirmRemove() {
             val previousValue = mutableItems.remove(currentSelectedItem!!.run { this.identifier })
@@ -488,6 +451,5 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
     /**
      * Terminated state of finite automaton.
      */
-    private inner class Release :
-        State<I, T>
+    private inner class Release : State<I, T>
 }
