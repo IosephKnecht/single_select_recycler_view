@@ -22,7 +22,7 @@
         app:layout_constraintWidth_percent="0.4"
         tools:listitem="@layout/item_spinner_label_dropdown" />
 
-    <com.project.iosephknecht.singleselectionrecyclerview.presentation.view.CustomEditTextView
+    <com.project.iosephknecht.singleselectionrecyclerview.presentation.common.ui.CustomEditTextView
         android:id="@+id/custom_edit_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

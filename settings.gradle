@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':single_selection'
 rootProject.name='SingleSelectionRecyclerView'

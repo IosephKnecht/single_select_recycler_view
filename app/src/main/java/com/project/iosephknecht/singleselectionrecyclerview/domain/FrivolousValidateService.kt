@@ -5,7 +5,12 @@ import java.util.concurrent.TimeUnit
 import kotlin.random.Random.Default.nextBoolean
 import kotlin.random.Random.Default.nextLong
 
-class FrivolousValidateService : ValidateService {
+/**
+ * Implementation on [ValidateService].
+ *
+ * @author IosephKnecht
+ */
+internal class FrivolousValidateService : ValidateService {
     override fun validate(value: String): Single<Boolean> {
         return Single.just(value)
             .flatMap {

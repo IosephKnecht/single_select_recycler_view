@@ -7,4 +7,12 @@
     <string name="category_3_title">Category 3</string>
     <string name="category_4_title">Category 4</string>
 
+    <string name="single_selection_case_1_title">Case 1</string>
+    <string name="single_selection_case_2_title">Case 2</string>
+    <string name="single_selection_case_3_title">Case 3</string>
+
+    <string name="single_selection_case_1_description">Immutable list, immutable items</string>
+    <string name="single_selection_case_2_description">Mutable list, immutable items</string>
+    <string name="single_selection_case_3_description">Mutable list, mutable items</string>
+
 </resources>
