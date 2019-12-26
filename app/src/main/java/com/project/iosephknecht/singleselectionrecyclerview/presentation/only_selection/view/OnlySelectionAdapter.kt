@@ -13,6 +13,11 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.inflate
 import java.util.*
 
+/**
+ * Adapter to view list with immutable items.
+ *
+ * @author IosephKnecht
+ */
 internal class OnlySelectionAdapter(
     private val selectableBackgroundDelegate: SelectableBackgroundDelegate,
     private val selectableTranslationDelegate: SelectableTranslationDelegate,

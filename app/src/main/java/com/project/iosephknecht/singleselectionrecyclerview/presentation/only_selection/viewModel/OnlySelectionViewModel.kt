@@ -10,6 +10,11 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.only_se
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * Implementation of [BaseSelectableViewModel] to view list with immutable items.
+ *
+ * @author IosephKnecht
+ */
 internal class OnlySelectionViewModel(
     private val someModelDataSource: SomeModelDataSource
 ) : BaseSelectableViewModel<UUID, SelectableViewState>(),

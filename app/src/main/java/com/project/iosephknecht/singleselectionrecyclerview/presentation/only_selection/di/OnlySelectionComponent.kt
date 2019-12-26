@@ -15,6 +15,11 @@ import dagger.Provides
 import dagger.Subcomponent
 import javax.inject.Inject
 
+/**
+ * Contract for DI - container.
+ *
+ * @author IosephKnecht.
+ */
 @PerFeatureLayerScope
 @Subcomponent(modules = [OnlySelectionComponentModule::class])
 interface OnlySelectionComponent {

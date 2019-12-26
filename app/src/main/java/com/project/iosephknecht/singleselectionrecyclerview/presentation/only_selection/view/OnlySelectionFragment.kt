@@ -19,6 +19,11 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.request
 import kotlinx.android.synthetic.main.fragment_only_selection.*
 import javax.inject.Inject
 
+/**
+ * Fragment to view case 'Immutable list, immutable items'.
+ *
+ * @author IosephKnecht
+ */
 class OnlySelectionFragment : Fragment() {
 
     companion object {

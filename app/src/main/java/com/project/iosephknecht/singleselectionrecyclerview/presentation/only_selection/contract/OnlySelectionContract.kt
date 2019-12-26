@@ -4,6 +4,11 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 import java.util.*
 
+/**
+ * Contract for module with immutable list items.
+ *
+ * @author IosephKnecht
+ */
 interface OnlySelectionContract {
     interface ViewModel : BaseSelectableContract.ViewModel<UUID, SelectableViewState>
 }
