@@ -1,7 +1,7 @@
 package com.project.iosephknecht.singleselectionrecyclerview.presentation.common.base_selectable.contract
 
 import androidx.lifecycle.LiveData
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.base_selectable.controller.SelectableItem
+import com.project.iosephknecht.single_selection.controller.SelectableItem
 import java.io.Serializable
 
 /**

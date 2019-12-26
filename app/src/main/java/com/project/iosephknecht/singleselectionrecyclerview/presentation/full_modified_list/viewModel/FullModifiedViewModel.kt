@@ -2,11 +2,11 @@ package com.project.iosephknecht.singleselectionrecyclerview.presentation.full_m
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.project.iosephknecht.single_selection.controller.SingleSelectionController
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeModel
 import com.project.iosephknecht.singleselectionrecyclerview.domain.SomeModelDataSource
 import com.project.iosephknecht.singleselectionrecyclerview.domain.ValidateService
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.full_modified_list.contract.FullModifiedContract
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.base_selectable.controller.SingleSelectionController
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.base_selectable.viewModel.BaseSelectableViewModel
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
 import io.reactivex.Single
@@ -38,9 +38,9 @@ internal class FullModifiedViewModel(
     override val confirmRemoveDialog = MutableLiveData<SelectableViewState>()
 
     override val stateController = SingleSelectionController(
-        items = mapToViewStates(),
-        viewController = this
-    )
+            items = mapToViewStates(),
+            viewController = this
+        )
 
     private var validateDisposable: Disposable? = null
     private var generateDisposable: Disposable? = null

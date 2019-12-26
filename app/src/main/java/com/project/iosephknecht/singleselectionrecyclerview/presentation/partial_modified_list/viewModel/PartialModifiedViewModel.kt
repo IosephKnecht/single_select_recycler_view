@@ -3,7 +3,7 @@ package com.project.iosephknecht.singleselectionrecyclerview.presentation.partia
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.project.iosephknecht.singleselectionrecyclerview.domain.SomeModelDataSource
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.base_selectable.controller.SingleSelectionController
+import com.project.iosephknecht.single_selection.controller.SingleSelectionController
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.base_selectable.viewModel.BaseSelectableViewModel
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.helpers.SingleLiveEvent
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState.SelectableViewState
@@ -31,9 +31,9 @@ internal class PartialModifiedViewModel(
     override val confirmRemoveDialog = SingleLiveEvent<SelectableViewState>()
 
     override val stateController = SingleSelectionController(
-        items = mapToViewStates(),
-        viewController = this
-    )
+            items = mapToViewStates(),
+            viewController = this
+        )
 
     private var generateDisposable: Disposable? = null
 

@@ -1,4 +1,4 @@
-package com.project.iosephknecht.singleselectionrecyclerview.presentation.common.base_selectable.controller
+package com.project.iosephknecht.single_selection.controller
 
 import java.io.Serializable
 
@@ -194,7 +194,8 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
     /**
      * State when only one of list items is selected.
      */
-    private inner class Selected : State<I, T> {
+    private inner class Selected :
+        State<I, T> {
         override fun select(identifier: I) {
             if (currentSelectedItem!!.identifier == identifier) return
 
@@ -273,7 +274,8 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
     /**
      * State of adding a new item to list.
      */
-    private inner class ProcessAdd : State<I, T> {
+    private inner class ProcessAdd :
+        State<I, T> {
 
         override fun select(identifier: I) {
             if (currentSelectedItem!!.identifier == identifier) return
@@ -426,7 +428,8 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
     /**
      * State of deleting a currently selected item/
      */
-    private inner class ProcessSelectedRemove : State<I, T> {
+    private inner class ProcessSelectedRemove :
+        State<I, T> {
 
         override fun confirmRemove() {
             val previousValue = mutableItems.remove(currentSelectedItem!!.run { this.identifier })
@@ -485,5 +488,6 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
     /**
      * Terminated state of finite automaton.
      */
-    private inner class Release : State<I, T>
+    private inner class Release :
+        State<I, T>
 }

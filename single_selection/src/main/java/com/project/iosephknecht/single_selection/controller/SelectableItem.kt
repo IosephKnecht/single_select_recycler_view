@@ -1,4 +1,4 @@
-package com.project.iosephknecht.singleselectionrecyclerview.presentation.common.base_selectable.controller
+package com.project.iosephknecht.single_selection.controller
 
 import java.io.Serializable
 

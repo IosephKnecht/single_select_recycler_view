@@ -1,8 +1,8 @@
 package com.project.iosephknecht.singleselectionrecyclerview.presentation.common.viewState
 
+import com.project.iosephknecht.single_selection.controller.SelectableItem
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeCategory
 import com.project.iosephknecht.singleselectionrecyclerview.data.SomeModel
-import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.base_selectable.controller.SelectableItem
 import java.util.*
 
 /**
