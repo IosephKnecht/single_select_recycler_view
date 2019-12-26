@@ -98,24 +98,6 @@ internal class FullModifiedAdapter(
 
         override val spinner: Spinner = itemView.findViewById(R.id.label)
 
-        private val arrayAdapter: ArrayAdapter<String>
-
-        init {
-            val context = itemView.context
-
-            arrayAdapter = ArrayAdapter(
-                context,
-                R.layout.item_spinner_label,
-                SomeCategory.values().map {
-                    it.getTitle(context.resources)!!
-                }
-            )
-
-            arrayAdapter.setDropDownViewResource(R.layout.item_spinner_label_dropdown)
-
-            spinner.adapter = arrayAdapter
-        }
-
         override fun bindValueTextWatcher(viewState: SelectableViewState) {
             customEditText.apply {
                 valueTextWatcher.viewState = viewState

@@ -73,7 +73,10 @@ class OnlySelectionFragment : Fragment() {
             selectableValueDelegate = SelectableValueDelegate(
                 defaultState = CustomEditTextView.State.ONLY_READABLE
             ),
-            selectableCategoryDelegate = SelectableCategoryDelegate()
+            selectableCategoryDelegate = SelectableCategoryDelegate(
+                adapterRes = R.layout.item_spinner_label,
+                dropDownViewRes = R.layout.item_spinner_label_dropdown
+            )
         )
 
         recycler_view.apply {

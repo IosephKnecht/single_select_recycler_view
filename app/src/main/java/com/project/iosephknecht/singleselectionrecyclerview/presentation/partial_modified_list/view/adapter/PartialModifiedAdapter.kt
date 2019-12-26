@@ -76,21 +76,5 @@ internal class PartialModifiedAdapter(
             itemView.findViewById(R.id.custom_edit_text_view)
 
         override val spinner: Spinner = itemView.findViewById(R.id.label)
-
-        init {
-            val context = rootView.context
-
-            val arrayAdapter = ArrayAdapter(
-                context,
-                R.layout.item_spinner_label,
-                SomeCategory.values().map {
-                    it.getTitle(context.resources)!!
-                }
-            )
-
-            arrayAdapter.setDropDownViewResource(R.layout.item_spinner_label_dropdown)
-
-            spinner.adapter = arrayAdapter
-        }
     }
 }
