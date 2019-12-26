@@ -13,6 +13,11 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.common.
 import com.project.iosephknecht.singleselectionrecyclerview.presentation.inflate
 import java.util.*
 
+/**
+ * Adapter to view list with partial modified items.
+ *
+ * @author IosephKnecht
+ */
 internal class PartialModifiedAdapter(
     private val selectableBackgroundDelegate: SelectableBackgroundDelegate,
     private val selectableTranslationDelegate: SelectableTranslationDelegate,

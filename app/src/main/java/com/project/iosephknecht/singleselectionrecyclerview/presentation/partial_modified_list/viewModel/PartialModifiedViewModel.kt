@@ -14,6 +14,13 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 
+/**
+ * Implementation of [BaseSelectableViewModel] for partial modified list.
+ *
+ * @param someModelDataSource
+ *
+ * @author IosephKnecht
+ */
 internal class PartialModifiedViewModel(
     private val someModelDataSource: SomeModelDataSource
 ) : BaseSelectableViewModel<UUID, SelectableViewState>(),

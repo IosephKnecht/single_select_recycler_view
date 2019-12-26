@@ -24,6 +24,11 @@ import com.project.iosephknecht.singleselectionrecyclerview.presentation.scrollT
 import kotlinx.android.synthetic.main.fragment_partial_modified.*
 import javax.inject.Inject
 
+/**
+ * Fragment to view case 'Immutable items, mutable list'.
+ *
+ * @author IosephKnecht
+ */
 class PartialModifiedFragment : Fragment() {
 
     companion object {
