@@ -81,7 +81,10 @@ class FullModifiedFragment : Fragment() {
                 defaultState = CustomEditTextView.State.READABLE_WITH_REMOVE,
                 selectedState = CustomEditTextView.State.EDITABLE
             ),
-            selectableCategoryDelegate = SelectableCategoryDelegate(),
+            selectableCategoryDelegate = SelectableCategoryDelegate(
+                adapterRes = R.layout.item_spinner_label,
+                dropDownViewRes = R.layout.item_spinner_label_dropdown
+            ),
             selectableErrorDelegate = SelectableErrorDelegate(
                 defaultBackground = R.drawable.bg_edittext_border,
                 errorBackground = R.drawable.bg_edittext_error

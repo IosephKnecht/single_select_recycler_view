@@ -159,8 +159,7 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
     /**
      * State when only one of list items is selected.
      */
-    private inner class Selected :
-        State<I, T> {
+    private inner class Selected : State<I, T> {
         override fun select(identifier: I) {
             if (currentSelectedItem!!.identifier == identifier) return
 
@@ -185,8 +184,9 @@ class SingleSelectionController<I : Serializable, T : SelectableItem<I>>(
 
         override fun add(newItem: T) {
             if (!mutableItems.containsKey(newItem.identifier)) {
-
-                currentSelectedItem!!.isSelected = false
+                viewController.onReset(currentSelectedItem!!.apply {
+                    isSelected = false
+                })
 
                 currentSelectedItem = newItem.apply {
                     isSelected = true

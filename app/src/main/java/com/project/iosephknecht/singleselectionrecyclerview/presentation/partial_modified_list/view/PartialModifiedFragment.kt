@@ -79,7 +79,10 @@ class PartialModifiedFragment : Fragment() {
             selectableValueDelegate = SelectableValueDelegate(
                 defaultState = CustomEditTextView.State.READABLE_WITH_REMOVE
             ),
-            selectableCategoryDelegate = SelectableCategoryDelegate()
+            selectableCategoryDelegate = SelectableCategoryDelegate(
+                adapterRes = R.layout.item_spinner_label,
+                dropDownViewRes = R.layout.item_spinner_label_dropdown
+            )
         )
 
         recycler_view.apply {
