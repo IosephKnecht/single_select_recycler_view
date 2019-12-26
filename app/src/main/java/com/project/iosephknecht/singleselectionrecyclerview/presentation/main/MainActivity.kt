@@ -18,6 +18,11 @@ import kotlinx.android.synthetic.main.layout_toolbar.*
 import kotlinx.android.synthetic.main.layout_toolbar.view.*
 import javax.inject.Inject
 
+/**
+ * Host - activity for app.
+ *
+ * @author IosephKnecht.
+ */
 class MainActivity : AppCompatActivity(), CasesFragment.Host {
 
     companion object {

@@ -14,6 +14,11 @@ import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
 
+/**
+ * Contract for DI - container.
+ *
+ * @author IosephKnecht
+ */
 @PerFeatureLayerScope
 @Subcomponent(modules = [MainComponentModule::class])
 interface MainComponent {

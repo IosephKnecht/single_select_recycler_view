@@ -3,6 +3,11 @@ package com.project.iosephknecht.singleselectionrecyclerview.presentation.main.m
 import androidx.annotation.StringRes
 import com.project.iosephknecht.singleselectionrecyclerview.R
 
+/**
+ * Enum for cases.
+ *
+ * @author IosephKnecht
+ */
 enum class SingleSelectionCase(
     @StringRes val title: Int,
     @StringRes val description: Int
