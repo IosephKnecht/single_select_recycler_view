@@ -26,3 +26,11 @@ To see the complete code for all the above examples check out the `app`. The app
 ### full_modified
 
 <img src="https://user-images.githubusercontent.com/26083647/71639498-c32e7e80-2c88-11ea-9a05-bd7b1fa4e598.gif" width=300 />
+
+## Deterministic finite automaton
+
+To see the complete code for automoton check out the `single_selection`.
+
+### Automaton's scheme
+
+<img src="https://user-images.githubusercontent.com/26083647/71639776-24a51c00-2c8e-11ea-843f-908e3f5f08c8.png" />
